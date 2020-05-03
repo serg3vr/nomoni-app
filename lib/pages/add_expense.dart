@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../models/expenses_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -16,6 +17,11 @@ class _AddExpenseState extends State<AddExpense> {
 
   final amountController = TextEditingController();
   final nameController = TextEditingController();
+  final dateController = TextEditingController();
+  final typeIdController = TextEditingController();
+  final categoryIdController = TextEditingController();
+  final paymentMethodIdController = TextEditingController();
+  final noteController = TextEditingController();
 
   @override
   void dispose() {    
@@ -27,7 +33,7 @@ class _AddExpenseState extends State<AddExpense> {
   Future<void> _createAndPrintSpendData(String amount, String name) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String>  myList =  (prefs.getStringList('myList') ?? List<String>());
-    ExpensesModel model = ExpensesModel(amount, name);
+    ExpensesModel model = ExpensesModel(amount, name, null, null, null, null, null);
     myList.add(jsonEncode(model));
     prefs.setStringList('myList', myList);
   }
@@ -47,17 +53,62 @@ class _AddExpenseState extends State<AddExpense> {
               children: <Widget>[
                 TextField(
                   controller: amountController,
+                  keyboardType: TextInputType.numberWithOptions(
+                    decimal: true,
+                    signed: false
+                  ),
                   decoration: InputDecoration(
                     hintText: "Amount: ",
-                    labelText: 'Amount: ',
-                    icon: Icon(Icons.add_to_queue)
+                    // labelText: 'Amount: ',
+                    // icon: Icon(Icons.add_to_queue)
                   )
                 ),
                 TextFormField(
                   controller: nameController,
+                  keyboardType: TextInputType.text,
                   decoration: InputDecoration(
-                    labelText: 'Name: '
+                    hintText: 'Name: '
                   )
+                ),
+                TextFormField(
+                  controller: dateController,
+                  keyboardType: TextInputType.datetime,
+                  decoration: InputDecoration(
+                    hintText: 'Date: ',
+                    icon: Icon(Icons.date_range)
+                  ),
+                ),
+                TextFormField(
+                  controller: typeIdController,
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(
+                    hintText: 'Type: ',
+                    icon: Icon(Icons.merge_type)
+                  ),
+                ),
+                TextFormField(
+                  controller: categoryIdController,
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(
+                    hintText: 'Category: ',
+                    icon: Icon(Icons.date_range)
+                  ),
+                ),
+                TextFormField(
+                  controller: paymentMethodIdController,
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(
+                    hintText: 'PaymentMethod: ',
+                    icon: Icon(Icons.date_range)
+                  ),
+                ),
+                TextFormField(
+                  controller: noteController,
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(
+                    hintText: 'Note: ',
+                    icon: Icon(Icons.date_range)
+                  ),
                 ),
                 RaisedButton(
                   onPressed: () {
