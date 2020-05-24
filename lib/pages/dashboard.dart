@@ -1,6 +1,5 @@
-// TODO - Dashboard va a ser el dashboard
 import 'package:flutter/material.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:nomoni_app/api/api.dart';
 
 class Dashboard extends StatefulWidget {
   final String title;
@@ -12,6 +11,22 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  
+  @override
+  void initState() {
+    super.initState();
+
+    // dynamic body = <String, String>{
+    //   "email": "sergioavr93@hotmail.com",
+    //   "password": "12345"
+    // };
+    
+    // api.post('auth/login', body).then((response) {
+    //   print (response);
+    //   print (response.body);
+    // });
+  }
+
   @override
   Widget build(BuildContext context) {
     var debug1BoxD = BoxDecoration(

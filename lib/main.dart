@@ -8,7 +8,7 @@ void main() {
   runApp(MaterialApp(
     initialRoute: '/',
     routes: <String, WidgetBuilder> {
-      '/': (BuildContext context) => Dashboard(title: 'Dashboard'),
+      '/': (BuildContext context) => Dashboard(title: 'Dashboards'),
       '/expenses': (BuildContext context) => Expenses(title: 'Expenses'),
       '/add_expense': (BuildContext context) => AddExpense(title: 'Add Expense'),
       '/edit_expense': (BuildContext context) => EditExpense(title: 'Edit Expense', index: 0),
