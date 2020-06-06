@@ -2,6 +2,11 @@ import 'package:http/http.dart' as http;
 
 final String serverURI = 'http://192.168.0.16:8000/';
 
+Future<http.Response> get(String url, dynamic body) async {
+  http.Response response = await http.get(serverURI + url);  // check the status code for the result
+  return response;
+}
+
 Future<http.Response> post(String url, dynamic body) async {
   // Await the http get response, then decode the json-formatted response.
   // print ('Mostrar algo');
