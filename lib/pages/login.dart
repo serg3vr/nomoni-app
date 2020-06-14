@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 import 'package:nomoni_app/utils/api.dart' as api;
 import 'package:nomoni_app/utils/helpers.dart' as helpers;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
   final String title;
@@ -19,6 +20,8 @@ class _LoginState extends State<Login> {
   final emailCtrl = TextEditingController();
   final passwordCtrl = TextEditingController();
 
+  _LoginState ();
+
   @override
   void dispose() {    
     emailCtrl.dispose();
@@ -26,12 +29,20 @@ class _LoginState extends State<Login> {
     super.dispose();
   }
 
-  Future<http.Response> logIn() async {
+  Future<void> logIn() async {
     dynamic body = <String, String> {
       'email': emailCtrl.text,
       'password': passwordCtrl.text
     };
-    return await api.post('auth/login', body);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await api.post('auth/login', body).then((response) {
+      Map resp = json.decode(response.body);
+
+      if (!resp['result']) {
+        helpers.showMessage(context, resp);
+      }
+      prefs.setString('jwt', resp['jwt']);
+    });
     
     // _createAndPrintSpendData(amountController.text, nameController.text);
     // Navigator.pushNamed(context, '/expenses');
@@ -71,17 +82,8 @@ class _LoginState extends State<Login> {
                   obscureText: true
                 ),
                 RaisedButton(
-                  onPressed: () {
-                    dynamic body = <String, String> {
-                      'email': emailCtrl.text,
-                      'password': passwordCtrl.text
-                    };
-                    api.post('auth/login', body).then((response) {
-                      if (response.statusCode == 200) {
-                        Map resp = json.decode(response.body);
-                        helpers.showMessage(context, resp);
-                      }
-                    });
+                  onPressed: () async {
+                    logIn();
                   },
                   child: Text('Sign In'),
                 ),
@@ -92,6 +94,4 @@ class _LoginState extends State<Login> {
       )
     );
   }
-
-    
 }
