@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'pages/login.dart';
-// import 'pages/dashboard.dart';
 import 'pages/expenses.dart';
 import 'pages/add_expense.dart';
 import 'pages/edit_expense.dart';
 
 void main() {
+  print('Esto es lo primero');
   runApp(MaterialApp(
     initialRoute: '/',
     routes: <String, WidgetBuilder> {

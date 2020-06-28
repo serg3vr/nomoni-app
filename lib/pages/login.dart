@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// import 'package:http/http.dart' as http;
 import 'package:nomoni_app/utils/api.dart' as api;
 import 'package:nomoni_app/utils/helpers.dart' as helpers;
+import 'package:nomoni_app/utils/user_prefs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
@@ -20,7 +20,30 @@ class _LoginState extends State<Login> {
   final emailCtrl = TextEditingController();
   final passwordCtrl = TextEditingController();
 
-  _LoginState ();
+  Future<void> _loadPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String jwt = (prefs.getString('jwt') ?? '');
+    bool emptyToken = ["", null, false, 0].contains(jwt);
+    
+    if (emptyToken) {
+      return;
+    }
+    UserPrefs.instance.jwt = jwt;
+    api.get('users/profile').then((response) {
+      Map data = jsonDecode(response.body);
+      bool result = data['result'];
+      if (result) {
+        Navigator.pushReplacementNamed(context, '/expenses');
+      }
+    });
+  }
+
+  _LoginState () {
+    emailCtrl.text = 'sergioavr93@hotmail.com';
+    passwordCtrl.text = '12345';
+    print('Esto es lo segundo');
+    _loadPrefs();
+  }
 
   @override
   void dispose() {    
@@ -29,24 +52,24 @@ class _LoginState extends State<Login> {
     super.dispose();
   }
 
-  Future<void> logIn() async {
+  Future<void> _logIn() async {
     dynamic body = <String, String> {
       'email': emailCtrl.text,
       'password': passwordCtrl.text
     };
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    print('auth/login');
     await api.post('auth/login', body).then((response) {
-      Map resp = json.decode(response.body);
-
-      if (!resp['result']) {
-        helpers.showMessage(context, resp);
+      Map data = json.decode(response.body);
+      bool result = data['result'];
+      if (result) {
+        Navigator.pushReplacementNamed(context, '/expenses');
+      } else {
+        helpers.showMessage(context, data);
       }
-      prefs.setString('jwt', resp['jwt']);
+      prefs.setString('jwt', data['jwt']);
+      UserPrefs.instance.jwt = prefs.getString('jwt');
     });
-    
-    // _createAndPrintSpendData(amountController.text, nameController.text);
-    // Navigator.pushNamed(context, '/expenses');
-    // Navigator.pushReplacementNamed(context, '/expenses');
   }
 
   @override
@@ -83,7 +106,7 @@ class _LoginState extends State<Login> {
                 ),
                 RaisedButton(
                   onPressed: () async {
-                    logIn();
+                    _logIn();
                   },
                   child: Text('Sign In'),
                 ),
