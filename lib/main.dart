@@ -7,9 +7,9 @@ import 'pages/edit_expense.dart';
 void main() {
   print('Esto es lo primero');
   runApp(MaterialApp(
-    initialRoute: '/',
+    initialRoute: '/login',
     routes: <String, WidgetBuilder> {
-      '/': (BuildContext context) => Login(title: 'Login2'),
+      // '/': (BuildContext context) => Login(title: 'Login'),
       '/login': (BuildContext context) => Login(title: 'Login'),
       '/expenses': (BuildContext context) => Expenses(title: 'Expenses'),
       '/add_expense': (BuildContext context) => AddExpense(title: 'Add Expense'),

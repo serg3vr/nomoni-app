@@ -19,7 +19,7 @@ class Expenses extends StatefulWidget {
 
 class _ExpensesState extends State<Expenses> {
 
-  List<dynamic> mySharedList = [];
+  List<dynamic> mySpendsList = [];
 
   @override
   void initState() {
@@ -34,7 +34,7 @@ class _ExpensesState extends State<Expenses> {
       Map data = jsonDecode(response.body);
       bool result = data['result'];
       if (result) {
-        mySharedList = data['spends'];
+        mySpendsList = data['spends'];
       }
     });
     // SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -42,7 +42,7 @@ class _ExpensesState extends State<Expenses> {
     // setState(() {
     //   for (var s in myList) {
     //     Map map = jsonDecode(s);
-    //     mySharedList.add(map);
+    //     mySpendsList.add(map);
     //   }
     // });
   }
@@ -50,9 +50,9 @@ class _ExpensesState extends State<Expenses> {
   Future<void> _deleteRow(int index) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      mySharedList.removeAt(index);
+      mySpendsList.removeAt(index);
       List<String> auxList = [];
-      for (var s in mySharedList) {
+      for (var s in mySpendsList) {
         auxList.add(jsonEncode(s));
       }
       prefs.setStringList('myList', auxList);
@@ -62,7 +62,7 @@ class _ExpensesState extends State<Expenses> {
   @override
   Widget build(BuildContext context) {
     print('Termino 1');
-    if (mySharedList.length <= 0) {
+    if (mySpendsList.length <= 0) {
       return Scaffold(
         appBar: AppBar(
           title: Text('Loading...'),
@@ -77,30 +77,36 @@ class _ExpensesState extends State<Expenses> {
         // stream: null,
         builder: (context, snapshot) {
           return ListView.builder(
-            itemCount: mySharedList.length,
+            itemCount: mySpendsList.length,
             itemBuilder: (context, index) {
+              String concept = mySpendsList[index]['concept'];
+              if (concept.length >= 22) {
+                concept = mySpendsList[index]['concept'].substring(0, 22) + '...';
+              }
+              String createdAt = mySpendsList[index]['created_at'].substring(0, 16);
               return Slidable(
                 actionPane: SlidableDrawerActionPane(),
                 actionExtentRatio: 0.25,
                 child: ListTile(
-                      onTap: () {},
-                      title: Text(mySharedList[index]['amount']),
-                      // leading: Icon(Icons.add_photo_alternate),
-                      leading: FlutterLogo(),
-                      trailing: Container(child: Column(
-                        children: <Widget>[
-                          FlutterLogo(),
-                          Text(
-                            r"$ " + mySharedList[index]['concept'],
-                            textDirection: TextDirection.ltr,
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.black87,
-                            ),
-                          ),
-                        ],
-                      )),
-                    ),
+                  onTap: () {},
+                  title: Text(concept),
+                  subtitle: Text(createdAt),
+                  // leading: Icon(Icons.add_photo_alternate),
+                  leading: FlutterLogo(),
+                  trailing: Container(child: Column(
+                    children: <Widget>[
+                      // FlutterLogo(),
+                      Text(
+                        r"$ " + mySpendsList[index]['amount'],
+                        textDirection: TextDirection.ltr,
+                        style: TextStyle(
+                          fontSize: 24,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ],
+                  )),
+                ),
                 actions: <Widget>[
                   IconSlideAction(
                     caption: 'Archive',
