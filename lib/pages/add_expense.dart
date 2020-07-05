@@ -33,7 +33,7 @@ class _AddExpenseState extends State<AddExpense> {
   Future<void> _createAndPrintSpendData(String amount, String name) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String>  myList =  (prefs.getStringList('myList') ?? List<String>());
-    ExpensesModel model = ExpensesModel(amount, name, null, null, null, null, null);
+    ExpensesModel model = ExpensesModel(null, null, null, null, null, null, null, null, null, null, null, null, null);
     myList.add(jsonEncode(model));
     prefs.setStringList('myList', myList);
   }

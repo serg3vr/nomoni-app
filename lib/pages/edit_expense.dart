@@ -39,15 +39,16 @@ class _EditExpenseState extends State<EditExpense> {
     ExpensesModel model = ExpensesModel.fromJson(map);
 
     setState(() {  
-      amountController.text = model.amount;
-      nameController.text = model.name;
+      print(model);
+      // amountController.text = model.amount;
+      // nameController.text = model.name;
     });
   }
 
   Future<void> _updateData(String amount, String name) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> myList = (prefs.getStringList('myList') ?? List<String>());
-    ExpensesModel model = ExpensesModel(amount, name, null, null, null, null, null);
+    ExpensesModel model = ExpensesModel(null, null, null, null, null, null, null, null, null, null, null, null, null);
     myList[widget.index] = jsonEncode(model);
     prefs.setStringList('myList', myList);
   }

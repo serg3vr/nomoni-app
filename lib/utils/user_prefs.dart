@@ -8,4 +8,5 @@ class UserPrefs {
   static UserPrefs get instance => _userPrefs;
 
   String jwt;
+  int id;
 }

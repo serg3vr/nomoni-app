@@ -2,9 +2,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nomoni_app/pages/edit_expense.dart';
+import 'package:nomoni_app/utils/user_prefs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:nomoni_app/utils/api.dart' as api;
 
 class Expenses extends StatefulWidget {
   final String title;
@@ -17,7 +19,7 @@ class Expenses extends StatefulWidget {
 
 class _ExpensesState extends State<Expenses> {
 
-  final List<Map> mySharedList = [];
+  List<dynamic> mySharedList = [];
 
   @override
   void initState() {
@@ -26,14 +28,23 @@ class _ExpensesState extends State<Expenses> {
   }
 
   Future<void> _loadData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> myList = (prefs.getStringList('myList') ?? List<String>());
-    setState(() {
-      for (var s in myList) {
-        Map map = jsonDecode(s);
-        mySharedList.add(map);
+    int id = UserPrefs.instance.id;
+    api.get('spends/by-user/$id').then((response) {
+      print('Termino 0');
+      Map data = jsonDecode(response.body);
+      bool result = data['result'];
+      if (result) {
+        mySharedList = data['spends'];
       }
     });
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // List<String> myList = (prefs.getStringList('myList') ?? List<String>());
+    // setState(() {
+    //   for (var s in myList) {
+    //     Map map = jsonDecode(s);
+    //     mySharedList.add(map);
+    //   }
+    // });
   }
 
   Future<void> _deleteRow(int index) async {
@@ -50,6 +61,7 @@ class _ExpensesState extends State<Expenses> {
 
   @override
   Widget build(BuildContext context) {
+    print('Termino 1');
     if (mySharedList.length <= 0) {
       return Scaffold(
         appBar: AppBar(
@@ -61,76 +73,81 @@ class _ExpensesState extends State<Expenses> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: ListView.builder(
-        itemCount: mySharedList.length,
-        itemBuilder: (context, index) {
-          return Slidable(
-            actionPane: SlidableDrawerActionPane(),
-            actionExtentRatio: 0.25,
-            child: ListTile(
-                  onTap: () {},
-                  title: Text(mySharedList[index]['amount']),
-                  // leading: Icon(Icons.add_photo_alternate),
-                  leading: FlutterLogo(),
-                  trailing: Container(child: Column(
-                    children: <Widget>[
-                      FlutterLogo(),
-                      Text(
-                        r"$ " + mySharedList[index]['name'],
-                        textDirection: TextDirection.ltr,
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.black87,
-                        ),
-                      ),
-                    ],
-                  )),
-                ),
-            actions: <Widget>[
-              IconSlideAction(
-                caption: 'Archive',
-                color: Colors.blue,
-                icon: Icons.archive,
-                onTap: () { 
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                    content: Text('Archive'),
-                  ));
-                }
-              ),
-              IconSlideAction(
-                caption: 'Edit',
-                color: Colors.indigo,
-                icon: Icons.update,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditExpense(title: 'Edit Expense', index: index),
+      body: FutureBuilder<Object>(
+        // stream: null,
+        builder: (context, snapshot) {
+          return ListView.builder(
+            itemCount: mySharedList.length,
+            itemBuilder: (context, index) {
+              return Slidable(
+                actionPane: SlidableDrawerActionPane(),
+                actionExtentRatio: 0.25,
+                child: ListTile(
+                      onTap: () {},
+                      title: Text(mySharedList[index]['amount']),
+                      // leading: Icon(Icons.add_photo_alternate),
+                      leading: FlutterLogo(),
+                      trailing: Container(child: Column(
+                        children: <Widget>[
+                          FlutterLogo(),
+                          Text(
+                            r"$ " + mySharedList[index]['concept'],
+                            textDirection: TextDirection.ltr,
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ],
+                      )),
                     ),
-                  );
-                }
-              ),
-            ],
-            secondaryActions: <Widget>[
-              IconSlideAction(
-                caption: 'More',
-                color: Colors.black45,
-                icon: Icons.more_horiz,
-                onTap: () { 
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                    content: Text('More'),
-                  ));
-                }
-              ),
-              IconSlideAction(
-                caption: 'Delete',
-                color: Colors.red,
-                icon: Icons.delete,
-                onTap: () {
-                  _deleteRow(index);
-                }
-              ),
-            ],
+                actions: <Widget>[
+                  IconSlideAction(
+                    caption: 'Archive',
+                    color: Colors.blue,
+                    icon: Icons.archive,
+                    onTap: () { 
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                        content: Text('Archive'),
+                      ));
+                    }
+                  ),
+                  IconSlideAction(
+                    caption: 'Edit',
+                    color: Colors.indigo,
+                    icon: Icons.update,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditExpense(title: 'Edit Expense', index: index),
+                        ),
+                      );
+                    }
+                  ),
+                ],
+                secondaryActions: <Widget>[
+                  IconSlideAction(
+                    caption: 'More',
+                    color: Colors.black45,
+                    icon: Icons.more_horiz,
+                    onTap: () { 
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                        content: Text('More'),
+                      ));
+                    }
+                  ),
+                  IconSlideAction(
+                    caption: 'Delete',
+                    color: Colors.red,
+                    icon: Icons.delete,
+                    onTap: () {
+                      _deleteRow(index);
+                    }
+                  ),
+                ],
+              );
+            }
           );
         }
       ),

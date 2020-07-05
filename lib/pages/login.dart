@@ -24,29 +24,30 @@ class _LoginState extends State<Login> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String jwt = (prefs.getString('jwt') ?? '');
     bool emptyToken = ["", null, false, 0].contains(jwt);
-    
-    if (emptyToken) {
-      return;
-    }
+
+    if (emptyToken) { return; }
+
     UserPrefs.instance.jwt = jwt;
     api.get('users/profile').then((response) {
       Map data = jsonDecode(response.body);
       bool result = data['result'];
       if (result) {
+        UserPrefs.instance.id = data['user']['id'];
+        print('D: Este es el id ${UserPrefs.instance.id}');
         Navigator.pushReplacementNamed(context, '/expenses');
       }
-    });
+    }); 
   }
 
   _LoginState () {
     emailCtrl.text = 'sergioavr93@hotmail.com';
     passwordCtrl.text = '12345';
-    print('Esto es lo segundo');
+    print('D: Esto es lo segundo');
     _loadPrefs();
   }
 
   @override
-  void dispose() {    
+  void dispose() {
     emailCtrl.dispose();
     passwordCtrl.dispose();
     super.dispose();
@@ -58,17 +59,17 @@ class _LoginState extends State<Login> {
       'password': passwordCtrl.text
     };
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    print('auth/login');
     await api.post('auth/login', body).then((response) {
       Map data = json.decode(response.body);
       bool result = data['result'];
+      prefs.setString('jwt', data['jwt']);
+      // UserPrefs.instance.jwt = prefs.getString('jwt');
       if (result) {
-        Navigator.pushReplacementNamed(context, '/expenses');
+        // Navigator.pushReplacementNamed(context, '/expenses');
+        _loadPrefs();
       } else {
         helpers.showMessage(context, data);
       }
-      prefs.setString('jwt', data['jwt']);
-      UserPrefs.instance.jwt = prefs.getString('jwt');
     });
   }
 
