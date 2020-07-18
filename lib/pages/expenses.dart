@@ -24,27 +24,20 @@ class _ExpensesState extends State<Expenses> {
   @override
   void initState() {
     super.initState();
-    _loadData();
-  }
+    // _loadData();
+	}
 
   Future<void> _loadData() async {
-    int id = UserPrefs.instance.id;
-    api.get('spends/by-user/$id').then((response) {
+		int id = UserPrefs.instance.id;
+    await api.get('spends/by-user/$id').then((response) {
       print('Termino 0');
       Map data = jsonDecode(response.body);
       bool result = data['result'];
       if (result) {
-        mySpendsList = data['spends'];
+				mySpendsList = data['spends'];
+        print(mySpendsList.length);
       }
     });
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // List<String> myList = (prefs.getStringList('myList') ?? List<String>());
-    // setState(() {
-    //   for (var s in myList) {
-    //     Map map = jsonDecode(s);
-    //     mySpendsList.add(map);
-    //   }
-    // });
   }
 
   Future<void> _deleteRow(int index) async {
@@ -61,102 +54,114 @@ class _ExpensesState extends State<Expenses> {
 
   @override
   Widget build(BuildContext context) {
-    print('Termino 1');
-    if (mySpendsList.length <= 0) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text('Loading...'),
-        )
-      );
-    }
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: FutureBuilder<Object>(
-        // stream: null,
-        builder: (context, snapshot) {
-          return ListView.builder(
-            itemCount: mySpendsList.length,
-            itemBuilder: (context, index) {
-              String concept = mySpendsList[index]['concept'];
-              if (concept.length >= 22) {
-                concept = mySpendsList[index]['concept'].substring(0, 22) + '...';
-              }
-              String createdAt = mySpendsList[index]['created_at'].substring(0, 16);
-              return Slidable(
-                actionPane: SlidableDrawerActionPane(),
-                actionExtentRatio: 0.25,
-                child: ListTile(
-                  onTap: () {},
-                  title: Text(concept),
-                  subtitle: Text(createdAt),
-                  // leading: Icon(Icons.add_photo_alternate),
-                  leading: FlutterLogo(),
-                  trailing: Container(child: Column(
-                    children: <Widget>[
-                      // FlutterLogo(),
-                      Text(
-                        r"$ " + mySpendsList[index]['amount'],
-                        textDirection: TextDirection.ltr,
-                        style: TextStyle(
-                          fontSize: 24,
-                          color: Colors.black87,
-                        ),
-                      ),
-                    ],
-                  )),
-                ),
-                actions: <Widget>[
-                  IconSlideAction(
-                    caption: 'Archive',
-                    color: Colors.blue,
-                    icon: Icons.archive,
-                    onTap: () { 
-                      Scaffold.of(context).showSnackBar(SnackBar(
-                        content: Text('Archive'),
-                      ));
-                    }
-                  ),
-                  IconSlideAction(
-                    caption: 'Edit',
-                    color: Colors.indigo,
-                    icon: Icons.update,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EditExpense(title: 'Edit Expense', index: index),
-                        ),
-                      );
-                    }
-                  ),
-                ],
-                secondaryActions: <Widget>[
-                  IconSlideAction(
-                    caption: 'More',
-                    color: Colors.black45,
-                    icon: Icons.more_horiz,
-                    onTap: () { 
-                      Scaffold.of(context).showSnackBar(SnackBar(
-                        content: Text('More'),
-                      ));
-                    }
-                  ),
-                  IconSlideAction(
-                    caption: 'Delete',
-                    color: Colors.red,
-                    icon: Icons.delete,
-                    onTap: () {
-                      _deleteRow(index);
-                    }
-                  ),
-                ],
-              );
-            }
-          );
-        }
-      ),
+      body: Container(
+				child: Column(
+					children: <Widget>[
+						Text(
+							'Hello, ${mySpendsList.length} How are you?',
+							textAlign: TextAlign.center,
+							overflow: TextOverflow.ellipsis
+						),
+						Expanded(
+							child: FutureBuilder (
+								future: _loadData(),
+								builder: (context, snapshot) {
+									print(snapshot.connectionState);
+									if (snapshot.connectionState == ConnectionState.done) {
+										return Container(
+											child: ListView.builder(
+												itemCount: mySpendsList.length,
+												itemBuilder: (context, index) {
+													String concept = mySpendsList[index]['concept'];
+													if (concept.length >= 22) {
+														concept = mySpendsList[index]['concept'].substring(0, 22) + '...';
+													}
+													String createdAt = mySpendsList[index]['created_at'].substring(0, 16);
+													return Slidable(
+														actionPane: SlidableDrawerActionPane(),
+														actionExtentRatio: 0.25,
+														child: ListTile(
+															onTap: () {},
+															title: Text(concept),
+															subtitle: Text(createdAt),
+															// leading: Icon(Icons.add_photo_alternate),
+															leading: FlutterLogo(),
+															trailing: Container(child: Column(
+																children: <Widget>[
+																	// FlutterLogo(),
+																	Text(
+																		r"$ " + mySpendsList[index]['amount'],
+																		textDirection: TextDirection.ltr,
+																		style: TextStyle(
+																			fontSize: 24,
+																			color: Colors.black87,
+																		),
+																	),
+																],
+															)),
+														),
+														actions: <Widget>[
+															IconSlideAction(
+																caption: 'Archive',
+																color: Colors.blue,
+																icon: Icons.archive,
+																onTap: () { 
+																	Scaffold.of(context).showSnackBar(SnackBar(
+																		content: Text('Archive'),
+																	));
+																}
+															),
+															IconSlideAction(
+																caption: 'Edit',
+																color: Colors.indigo,
+																icon: Icons.update,
+																onTap: () {
+																	Navigator.push(
+																		context,
+																		MaterialPageRoute(
+																			builder: (context) => EditExpense(title: 'Edit Expense', index: index),
+																		),
+																	);
+																}
+															),
+														],
+														secondaryActions: <Widget>[
+															IconSlideAction(
+																caption: 'More',
+																color: Colors.black45,
+																icon: Icons.more_horiz,
+																onTap: () { 
+																	Scaffold.of(context).showSnackBar(SnackBar(
+																		content: Text('More'),
+																	));
+																}
+															),
+															IconSlideAction(
+																caption: 'Delete',
+																color: Colors.red,
+																icon: Icons.delete,
+																onTap: () {
+																	_deleteRow(index);
+																}
+															),
+														],
+													);
+												}
+											)
+										);
+									} else {
+										return CircularProgressIndicator();
+									}
+								}
+							),
+						),
+					]
+				)
+			),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(context, '/add_expense');

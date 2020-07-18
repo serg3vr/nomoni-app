@@ -36,7 +36,7 @@ class _LoginState extends State<Login> {
         print('D: Este es el id ${UserPrefs.instance.id}');
         Navigator.pushReplacementNamed(context, '/expenses');
       }
-    }); 
+    });
   }
 
   _LoginState () {

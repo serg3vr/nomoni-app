@@ -24,11 +24,11 @@ Map<String, String> getHeaders() {
 }
 
 Future<http.Response> get(String url) {
-  print(url);
+  print(serverURI + url);
   return http.get(serverURI + url, headers: getHeaders());
 }
 
 Future<http.Response> post(String url, dynamic body) {
-  print(url);
+  print(serverURI + url);
   return http.post(serverURI + url, headers: getHeaders(), body: body);
 }
