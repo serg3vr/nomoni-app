@@ -41,15 +41,15 @@ class _ExpensesState extends State<Expenses> {
   }
 
   Future<void> _deleteRow(int index) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      mySpendsList.removeAt(index);
-      List<String> auxList = [];
-      for (var s in mySpendsList) {
-        auxList.add(jsonEncode(s));
-      }
-      prefs.setStringList('myList', auxList);
-    });
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // setState(() {
+    //   mySpendsList.removeAt(index);
+    //   List<String> auxList = [];
+    //   for (var s in mySpendsList) {
+    //     auxList.add(jsonEncode(s));
+    //   }
+    //   prefs.setStringList('myList', auxList);
+    // });
   }
 
   @override

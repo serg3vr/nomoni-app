@@ -5,7 +5,6 @@ import 'pages/add_expense.dart';
 import 'pages/edit_expense.dart';
 
 void main() {
-  print('Esto es lo primero');
   runApp(MaterialApp(
     initialRoute: '/login',
     routes: <String, WidgetBuilder> {

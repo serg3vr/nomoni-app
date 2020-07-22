@@ -33,7 +33,7 @@ class _LoginState extends State<Login> {
       bool result = data['result'];
       if (result) {
         UserPrefs.instance.id = data['user']['id'];
-        print('D: Este es el id ${UserPrefs.instance.id}');
+        // print('D: Este es el id ${UserPrefs.instance.id}');
         Navigator.pushReplacementNamed(context, '/expenses');
       }
     });
@@ -42,7 +42,6 @@ class _LoginState extends State<Login> {
   _LoginState () {
     emailCtrl.text = 'sergioavr93@hotmail.com';
     passwordCtrl.text = '12345';
-    print('D: Esto es lo segundo');
     _loadPrefs();
   }
 
@@ -61,6 +60,7 @@ class _LoginState extends State<Login> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await api.post('auth/login', body).then((response) {
       Map data = json.decode(response.body);
+      print(data);
       bool result = data['result'];
       prefs.setString('jwt', data['jwt']);
       // UserPrefs.instance.jwt = prefs.getString('jwt');

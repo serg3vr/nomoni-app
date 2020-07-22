@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:nomoni_app/utils/user_prefs.dart';
 import '../models/expenses_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -16,7 +17,7 @@ class AddExpense extends StatefulWidget {
 class _AddExpenseState extends State<AddExpense> {
 
   final amountController = TextEditingController();
-  final nameController = TextEditingController();
+  final conceptController = TextEditingController();
   final dateController = TextEditingController();
   final typeIdController = TextEditingController();
   final categoryIdController = TextEditingController();
@@ -26,16 +27,16 @@ class _AddExpenseState extends State<AddExpense> {
   @override
   void dispose() {    
     amountController.dispose();
-    nameController.dispose();
+    conceptController.dispose();
     super.dispose();
   }
 
   Future<void> _createAndPrintSpendData(String amount, String name) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String>  myList =  (prefs.getStringList('myList') ?? List<String>());
-    ExpensesModel model = ExpensesModel(null, null, null, null, null, null, null, null, null, null, null, null, null);
-    myList.add(jsonEncode(model));
-    prefs.setStringList('myList', myList);
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // List<String>  myList =  (prefs.getStringList('myList') ?? List<String>());
+    // ExpensesModel model = ExpensesModel(null, null, null, null, null, null, null, null, null, null, null, null, null);
+    // myList.add(jsonEncode(model));
+    // prefs.setStringList('myList', myList);
   }
 
   @override
@@ -64,7 +65,7 @@ class _AddExpenseState extends State<AddExpense> {
                   )
                 ),
                 TextFormField(
-                  controller: nameController,
+                  controller: conceptController,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
                     hintText: 'Name: '
@@ -110,11 +111,41 @@ class _AddExpenseState extends State<AddExpense> {
                     icon: Icon(Icons.date_range)
                   ),
                 ),
+                new DropdownButton<String>(
+                  items: <String>['A', 'B', 'C', 'D'].map((String value) {
+                    return new DropdownMenuItem<String>(
+                      value: value,
+                      child: new Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (_) {},
+                ),
                 RaisedButton(
                   onPressed: () {
-                    _createAndPrintSpendData(amountController.text, nameController.text);
-                    // Navigator.pushNamed(context, '/expenses');
-                    Navigator.pushReplacementNamed(context, '/expenses');
+                    // _createAndPrintSpendData(amountController.text, conceptController.text);
+                    var createAt = dateController.text;
+                    var concept = conceptController.text;
+                    var amount = amountController.text;
+                    ExpensesModel expense = ExpensesModel(
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      BigInt.parse(amountController.text),
+                      dateController.text,
+                      conceptController.text,
+                      null,
+                      int.parse(typeIdController.text),
+                      int.parse(categoryIdController.text),
+                      int.parse(paymentMethodIdController.text),
+                      UserPrefs.instance.id
+                    );
+                    print(expense);
+                    // Navigator.pushReplacementNamed(context, '/expenses');
+                    print(createAt);
+                    print(concept);
+                    print(amount);
                   },
                   child: Text('Save'),
                 ),
