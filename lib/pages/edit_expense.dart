@@ -46,11 +46,11 @@ class _EditExpenseState extends State<EditExpense> {
   }
 
   Future<void> _updateData(String amount, String name) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> myList = (prefs.getStringList('myList') ?? List<String>());
-    ExpensesModel model = ExpensesModel(null, null, null, null, null, null, null, null, null, null, null, null, null);
-    myList[widget.index] = jsonEncode(model);
-    prefs.setStringList('myList', myList);
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // List<String> myList = (prefs.getStringList('myList') ?? List<String>());
+    // ExpensesModel model = ExpensesModel(null, null, null, null, null, null, null, null, null, null, null, null, null);
+    // myList[widget.index] = jsonEncode(model);
+    // prefs.setStringList('myList', myList);
   }
 
   @override

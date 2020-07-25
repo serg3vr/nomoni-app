@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nomoni_app/pages/edit_expense.dart';
 import 'package:nomoni_app/utils/user_prefs.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:nomoni_app/utils/api.dart' as api;
@@ -30,26 +29,24 @@ class _ExpensesState extends State<Expenses> {
   Future<void> _loadData() async {
 		int id = UserPrefs.instance.id;
     await api.get('spends/by-user/$id').then((response) {
-      print('Termino 0');
       Map data = jsonDecode(response.body);
       bool result = data['result'];
       if (result) {
 				mySpendsList = data['spends'];
-        print(mySpendsList.length);
       }
     });
   }
 
-  Future<void> _deleteRow(int index) async {
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // setState(() {
-    //   mySpendsList.removeAt(index);
-    //   List<String> auxList = [];
-    //   for (var s in mySpendsList) {
-    //     auxList.add(jsonEncode(s));
-    //   }
-    //   prefs.setStringList('myList', auxList);
-    // });
+  Future<void> _deleteSpend(int id) async {
+    await api.delete('spends/$id').then((response) {
+      print(response.body);
+      Map data = jsonDecode(response.body);
+      bool result = data['result'];
+      if (result) {
+        mySpendsList = [];
+        _loadData();
+      }
+    });
   }
 
   @override
@@ -145,7 +142,7 @@ class _ExpensesState extends State<Expenses> {
 																color: Colors.red,
 																icon: Icons.delete,
 																onTap: () {
-																	_deleteRow(index);
+																	_deleteSpend(mySpendsList[index]['id']);
 																}
 															),
 														],

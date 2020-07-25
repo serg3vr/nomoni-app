@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nomoni_app/utils/user_prefs.dart';
-import '../models/expenses_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:nomoni_app/utils/api.dart' as api;
 
 class AddExpense extends StatefulWidget {
   final String title;
@@ -19,24 +17,38 @@ class _AddExpenseState extends State<AddExpense> {
   final amountController = TextEditingController();
   final conceptController = TextEditingController();
   final dateController = TextEditingController();
-  final typeIdController = TextEditingController();
+  // final typeIdController = TextEditingController();
   final categoryIdController = TextEditingController();
-  final paymentMethodIdController = TextEditingController();
-  final noteController = TextEditingController();
+  // final paymentMethodIdController = TextEditingController();
+  // final noteController = TextEditingController();
 
   @override
-  void dispose() {    
+  void initState() {
+    super.initState();
+    // _loadData();
+    amountController.text = '100';
+    conceptController.text = 'Algo';
+    var now = new DateTime.now();
+    dateController.text = now.toString();
+    categoryIdController.text = '1';
+	}
+
+  @override
+  void dispose() {
     amountController.dispose();
     conceptController.dispose();
     super.dispose();
   }
 
-  Future<void> _createAndPrintSpendData(String amount, String name) async {
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // List<String>  myList =  (prefs.getStringList('myList') ?? List<String>());
-    // ExpensesModel model = ExpensesModel(null, null, null, null, null, null, null, null, null, null, null, null, null);
-    // myList.add(jsonEncode(model));
-    // prefs.setStringList('myList', myList);
+  Future<void> _createSpend(Map params) async {
+    await api.post('spends', params).then((response) {
+      print(response.body);
+      Map data = jsonDecode(response.body);
+      bool result = data['result'];
+      if (result) {
+        Navigator.pushReplacementNamed(context, '/expenses');
+      }
+    });
   }
 
   @override
@@ -60,7 +72,7 @@ class _AddExpenseState extends State<AddExpense> {
                   ),
                   decoration: InputDecoration(
                     hintText: "Amount: ",
-                    // labelText: 'Amount: ',
+                    labelText: 'Amount: ',
                     // icon: Icon(Icons.add_to_queue)
                   )
                 ),
@@ -80,14 +92,6 @@ class _AddExpenseState extends State<AddExpense> {
                   ),
                 ),
                 TextFormField(
-                  controller: typeIdController,
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                    hintText: 'Type: ',
-                    icon: Icon(Icons.merge_type)
-                  ),
-                ),
-                TextFormField(
                   controller: categoryIdController,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
@@ -95,57 +99,31 @@ class _AddExpenseState extends State<AddExpense> {
                     icon: Icon(Icons.date_range)
                   ),
                 ),
-                TextFormField(
-                  controller: paymentMethodIdController,
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                    hintText: 'PaymentMethod: ',
-                    icon: Icon(Icons.date_range)
+                /* Expanded(
+                  child: new DropdownButton<String>(
+                    items: <String>['A', 'B', 'C', 'D'].map((String value) {
+                      return new DropdownMenuItem<String>(
+                        value: value,
+                        child: new Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (_) {
+                      print(_);
+                    },
                   ),
-                ),
-                TextFormField(
-                  controller: noteController,
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                    hintText: 'Note: ',
-                    icon: Icon(Icons.date_range)
-                  ),
-                ),
-                new DropdownButton<String>(
-                  items: <String>['A', 'B', 'C', 'D'].map((String value) {
-                    return new DropdownMenuItem<String>(
-                      value: value,
-                      child: new Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (_) {},
-                ),
+                ), */
                 RaisedButton(
                   onPressed: () {
-                    // _createAndPrintSpendData(amountController.text, conceptController.text);
-                    var createAt = dateController.text;
-                    var concept = conceptController.text;
-                    var amount = amountController.text;
-                    ExpensesModel expense = ExpensesModel(
-                      null,
-                      null,
-                      null,
-                      null,
-                      null,
-                      BigInt.parse(amountController.text),
-                      dateController.text,
-                      conceptController.text,
-                      null,
-                      int.parse(typeIdController.text),
-                      int.parse(categoryIdController.text),
-                      int.parse(paymentMethodIdController.text),
-                      UserPrefs.instance.id
-                    );
-                    print(expense);
-                    // Navigator.pushReplacementNamed(context, '/expenses');
-                    print(createAt);
-                    print(concept);
-                    print(amount);
+                    Map params = {
+                      'amount': amountController.text,
+                      'date': dateController.text,
+                      'concept': conceptController.text,
+                      // 'note': noteController.text,
+                      // 'type_id': typeIdController.text,
+                      'category_id': categoryIdController.text,
+                      // 'payment_method_id': paymentMethodIdController.text
+                    };
+                    _createSpend(params);
                   },
                   child: Text('Save'),
                 ),
