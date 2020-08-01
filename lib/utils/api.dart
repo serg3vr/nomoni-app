@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:nomoni_app/utils/user_prefs.dart';
 
@@ -36,4 +38,9 @@ Future<http.Response> post(String url, dynamic body) {
 Future<http.Response> delete(String url) {
   print('______________________________________________________DEL: ' + serverURI + url);
   return http.delete(serverURI + url, headers: getHeaders());
+}
+
+Future<http.Response> put(String url, dynamic body) {
+  print('______________________________________________________PUT: ' + serverURI + url);
+  return http.put(serverURI + url, headers: getHeaders());
 }

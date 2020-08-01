@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import '../models/expenses_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 class EditExpense extends StatefulWidget {
-  final String title;
-  final int index;
+  final String title = 'Edit Expense';
+  final ExpensesModel expense;
   
-  EditExpense({Key key, this.title, @required this.index}) : super(key: key);
+  EditExpense({Key key, @required this.expense}) : super(key: key);
 
   @override
   _EditExpenseState createState() => _EditExpenseState();
@@ -15,31 +14,40 @@ class EditExpense extends StatefulWidget {
 
 class _EditExpenseState extends State<EditExpense> {
 
-  final List<Map> mySharedList = [];
   final amountController = TextEditingController();
-  final nameController = TextEditingController();
+  final conceptController = TextEditingController();
+  final dateController = TextEditingController();
+  // final typeIdController = TextEditingController();
+  final categoryIdController = TextEditingController();
+  // final paymentMethodIdController = TextEditingController();
+  // final noteController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _loadRowData(widget.index);
+    print('llego aca');
+    _loadExpense(widget.expense);
   }
 
   @override
   void dispose() {    
     amountController.dispose();
-    nameController.dispose();
+    conceptController.dispose();
+    dateController.dispose();
+    categoryIdController.dispose();
     super.dispose();
   }
 
-  Future<void> _loadRowData(int index) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> myList = (prefs.getStringList('myList') ?? List<String>());
-    Map map = jsonDecode(myList[index]);
-    ExpensesModel model = ExpensesModel.fromJson(map);
+  void _loadExpense(ExpensesModel expense) {
+    // Map exp = expense.toJson();
+    // print(exp['concept'].runtimeType);
+    // amountController.text = exp['amount'];
+    // conceptController.text = exp['concept'];
+    // dateController.text = exp['date'];
+    // categoryIdController.text = exp['category_id'];;
 
     setState(() {  
-      print(model);
+      // print(model); 
       // amountController.text = model.amount;
       // nameController.text = model.name;
     });
@@ -75,14 +83,14 @@ class _EditExpenseState extends State<EditExpense> {
                   )
                 ),
                 TextFormField(
-                  controller: nameController,
+                  controller: conceptController,
                   decoration: InputDecoration(
                     labelText: 'Name: '
                   )
                 ),
                 RaisedButton(
                   onPressed: () {
-                    _updateData(amountController.text, nameController.text);
+                    _updateData(amountController.text, conceptController.text);
                     Navigator.pushReplacementNamed(context, '/expenses');
                   },
                   child: Text('Save'),

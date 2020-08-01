@@ -29,6 +29,7 @@ class _LoginState extends State<Login> {
 
     UserPrefs.instance.jwt = jwt;
     api.get('users/profile').then((response) {
+      print(response.body);
       Map data = jsonDecode(response.body);
       bool result = data['result'];
       if (result) {
@@ -59,6 +60,7 @@ class _LoginState extends State<Login> {
     };
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await api.post('auth/login', body).then((response) {
+      print('<<${response.body}>>');
       Map data = json.decode(response.body);
       print(data);
       bool result = data['result'];

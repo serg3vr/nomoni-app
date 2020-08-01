@@ -1,6 +1,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nomoni_app/models/expenses_model.dart';
 import 'package:nomoni_app/pages/edit_expense.dart';
 import 'package:nomoni_app/utils/user_prefs.dart';
 import 'dart:convert';
@@ -18,7 +19,7 @@ class Expenses extends StatefulWidget {
 
 class _ExpensesState extends State<Expenses> {
 
-  List<dynamic> mySpendsList = [];
+  List<dynamic> expensesList = [];
 
   @override
   void initState() {
@@ -32,18 +33,17 @@ class _ExpensesState extends State<Expenses> {
       Map data = jsonDecode(response.body);
       bool result = data['result'];
       if (result) {
-				mySpendsList = data['spends'];
+				expensesList = data['spends'];
       }
     });
   }
 
   Future<void> _deleteSpend(int id) async {
     await api.delete('spends/$id').then((response) {
-      print(response.body);
       Map data = jsonDecode(response.body);
       bool result = data['result'];
       if (result) {
-        mySpendsList = [];
+        expensesList = [];
         _loadData();
       }
     });
@@ -59,7 +59,7 @@ class _ExpensesState extends State<Expenses> {
 				child: Column(
 					children: <Widget>[
 						Text(
-							'Hello, ${mySpendsList.length} How are you?',
+							'Hello, ${expensesList.length} How are you?',
 							textAlign: TextAlign.center,
 							overflow: TextOverflow.ellipsis
 						),
@@ -67,17 +67,16 @@ class _ExpensesState extends State<Expenses> {
 							child: FutureBuilder (
 								future: _loadData(),
 								builder: (context, snapshot) {
-									print(snapshot.connectionState);
 									if (snapshot.connectionState == ConnectionState.done) {
 										return Container(
 											child: ListView.builder(
-												itemCount: mySpendsList.length,
+												itemCount: expensesList.length,
 												itemBuilder: (context, index) {
-													String concept = mySpendsList[index]['concept'];
+													String concept = expensesList[index]['concept'];
 													if (concept.length >= 22) {
-														concept = mySpendsList[index]['concept'].substring(0, 22) + '...';
+														concept = expensesList[index]['concept'].substring(0, 22) + '...';
 													}
-													String createdAt = mySpendsList[index]['created_at'].substring(0, 16);
+													String createdAt = expensesList[index]['created_at'].substring(0, 16);
 													return Slidable(
 														actionPane: SlidableDrawerActionPane(),
 														actionExtentRatio: 0.25,
@@ -91,7 +90,7 @@ class _ExpensesState extends State<Expenses> {
 																children: <Widget>[
 																	// FlutterLogo(),
 																	Text(
-																		r"$ " + mySpendsList[index]['amount'],
+																		r"$ " + expensesList[index]['amount'],
 																		textDirection: TextDirection.ltr,
 																		style: TextStyle(
 																			fontSize: 24,
@@ -117,10 +116,23 @@ class _ExpensesState extends State<Expenses> {
 																color: Colors.indigo,
 																icon: Icons.update,
 																onTap: () {
+                                  /* Map params = <String, dynamic>{
+                                    'amount': double.parse(expensesList[index]['amount']),
+                                    'date': expensesList[index]['date'],
+                                    'concept': expensesList[index]['concept'],
+                                    // 'note': expensesList[index]['/'],
+                                    // 'type_id': expensesList[index]['/'],
+                                    'category_id': int.parse(expensesList[index]['category_id']),
+                                    // 'payment_method_id': paymentMethodIdController.text
+                                  }; */
+                                  // HERE parseand la categoria porque no jala como int
+                                  // print(expensesList[index]);
+                                  ExpensesModel expense = ExpensesModel.fromJson(expensesList[index]);
+                                  // ExpensesModel expense = ExpensesModel.fromJson(params);
 																	Navigator.push(
 																		context,
 																		MaterialPageRoute(
-																			builder: (context) => EditExpense(title: 'Edit Expense', index: index),
+																			builder: (context) => EditExpense(expense: expense),
 																		),
 																	);
 																}
@@ -142,7 +154,7 @@ class _ExpensesState extends State<Expenses> {
 																color: Colors.red,
 																icon: Icons.delete,
 																onTap: () {
-																	_deleteSpend(mySpendsList[index]['id']);
+																	_deleteSpend(expensesList[index]['id']);
 																}
 															),
 														],
