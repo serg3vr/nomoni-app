@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import '../models/expenses_model.dart';
 import 'dart:convert';
+import 'package:nomoni_app/utils/api.dart' as api;
 
 class EditExpense extends StatefulWidget {
   final String title = 'Edit Expense';
-  final ExpensesModel expense;
+  final int id;
   
-  EditExpense({Key key, @required this.expense}) : super(key: key);
+  EditExpense({Key key, @required this.id}) : super(key: key);
 
   @override
   _EditExpenseState createState() => _EditExpenseState();
@@ -22,11 +23,13 @@ class _EditExpenseState extends State<EditExpense> {
   // final paymentMethodIdController = TextEditingController();
   // final noteController = TextEditingController();
 
+  Map<String, dynamic> expense;
+
   @override
   void initState() {
     super.initState();
     print('llego aca');
-    _loadExpense(widget.expense);
+    _loadData(widget.id);
   }
 
   @override
@@ -38,27 +41,31 @@ class _EditExpenseState extends State<EditExpense> {
     super.dispose();
   }
 
-  void _loadExpense(ExpensesModel expense) {
-    // Map exp = expense.toJson();
-    // print(exp['concept'].runtimeType);
-    // amountController.text = exp['amount'];
-    // conceptController.text = exp['concept'];
-    // dateController.text = exp['date'];
-    // categoryIdController.text = exp['category_id'];;
+  Future<void> _loadData(id) async {
+    await api.get('spends/$id').then((response) {
+      Map data = jsonDecode(response.body);
+      // print (response.body);
+      bool result = data['result'];
+      if (result) {
+				expense = data['expense'];
+        // print(expense);
+        amountController.text = expense['amount'];
+        conceptController.text = expense['concept'];
+        dateController.text = expense['date'];
+        categoryIdController.text = expense['category_id'].toString();
 
-    setState(() {  
-      // print(model); 
-      // amountController.text = model.amount;
-      // nameController.text = model.name;
+      }
     });
   }
 
-  Future<void> _updateData(String amount, String name) async {
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // List<String> myList = (prefs.getStringList('myList') ?? List<String>());
-    // ExpensesModel model = ExpensesModel(null, null, null, null, null, null, null, null, null, null, null, null, null);
-    // myList[widget.index] = jsonEncode(model);
-    // prefs.setStringList('myList', myList);
+  Future<void> _updateSpend(int id, Map params) async {
+    await api.put('spends/$id', params).then((response) {
+      Map data = jsonDecode(response.body);
+      bool result = data['result'];
+      if (result) {
+        Navigator.pushReplacementNamed(context, '/expenses');
+      }
+    });
   }
 
   @override
@@ -76,22 +83,51 @@ class _EditExpenseState extends State<EditExpense> {
               children: <Widget>[
                 TextField(
                   controller: amountController,
+                  keyboardType: TextInputType.numberWithOptions(
+                    decimal: true,
+                    signed: false
+                  ),
                   decoration: InputDecoration(
-                    hintText: "Amount",
+                    hintText: "Amount: ",
                     labelText: 'Amount: ',
-                    icon: Icon(Icons.add_to_queue)
+                    // icon: Icon(Icons.add_to_queue)
                   )
                 ),
                 TextFormField(
                   controller: conceptController,
+                  keyboardType: TextInputType.text,
                   decoration: InputDecoration(
-                    labelText: 'Name: '
+                    hintText: 'Name: '
                   )
+                ),
+                TextFormField(
+                  controller: dateController,
+                  keyboardType: TextInputType.datetime,
+                  decoration: InputDecoration(
+                    hintText: 'Date: ',
+                    icon: Icon(Icons.date_range)
+                  ),
+                ),
+                TextFormField(
+                  controller: categoryIdController,
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(
+                    hintText: 'Category: ',
+                    icon: Icon(Icons.date_range)
+                  ),
                 ),
                 RaisedButton(
                   onPressed: () {
-                    _updateData(amountController.text, conceptController.text);
-                    Navigator.pushReplacementNamed(context, '/expenses');
+                    Map params = {
+                      'amount': amountController.text,
+                      'date': dateController.text,
+                      'concept': conceptController.text,
+                      // 'note': noteController.text,
+                      // 'type_id': typeIdController.text,
+                      'category_id': categoryIdController.text,
+                      // 'payment_method_id': paymentMethodIdController.text
+                    };
+                    _updateSpend(widget.id, params);
                   },
                   child: Text('Save'),
                 ),

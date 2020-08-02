@@ -116,23 +116,13 @@ class _ExpensesState extends State<Expenses> {
 																color: Colors.indigo,
 																icon: Icons.update,
 																onTap: () {
-                                  /* Map params = <String, dynamic>{
-                                    'amount': double.parse(expensesList[index]['amount']),
-                                    'date': expensesList[index]['date'],
-                                    'concept': expensesList[index]['concept'],
-                                    // 'note': expensesList[index]['/'],
-                                    // 'type_id': expensesList[index]['/'],
-                                    'category_id': int.parse(expensesList[index]['category_id']),
-                                    // 'payment_method_id': paymentMethodIdController.text
-                                  }; */
-                                  // HERE parseand la categoria porque no jala como int
-                                  // print(expensesList[index]);
-                                  ExpensesModel expense = ExpensesModel.fromJson(expensesList[index]);
+                                  // ExpensesModel expense = ExpensesModel.fromJson(expensesList[index]);
                                   // ExpensesModel expense = ExpensesModel.fromJson(params);
+                                  int id = expensesList[index]['id'];
 																	Navigator.push(
 																		context,
 																		MaterialPageRoute(
-																			builder: (context) => EditExpense(expense: expense),
+																			builder: (context) => EditExpense(id: id),
 																		),
 																	);
 																}

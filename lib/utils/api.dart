@@ -40,7 +40,8 @@ Future<http.Response> delete(String url) {
   return http.delete(serverURI + url, headers: getHeaders());
 }
 
-Future<http.Response> put(String url, dynamic body) {
+Future<http.Response> put(String url, dynamic body) async {
   print('______________________________________________________PUT: ' + serverURI + url);
-  return http.put(serverURI + url, headers: getHeaders());
+  http.Response resp = await http.put(serverURI + url, headers: getHeaders(), body: body);
+  return resp;
 }
