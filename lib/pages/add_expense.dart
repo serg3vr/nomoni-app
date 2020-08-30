@@ -41,8 +41,8 @@ class _AddExpenseState extends State<AddExpense> {
   }
 
   Future<void> _createSpend(Map params) async {
-    await api.post('spends', params).then((response) {
-      // print(response.body);
+    await api.post('expenses', params).then((response) {
+      print(response.body);
       Map data = jsonDecode(response.body);
       bool result = data['result'];
       if (result) {

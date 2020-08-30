@@ -42,7 +42,7 @@ class _EditExpenseState extends State<EditExpense> {
   }
 
   Future<void> _loadData(id) async {
-    await api.get('spends/$id').then((response) {
+    await api.get('expenses/$id').then((response) {
       Map data = jsonDecode(response.body);
       // print (response.body);
       bool result = data['result'];
@@ -59,7 +59,7 @@ class _EditExpenseState extends State<EditExpense> {
   }
 
   Future<void> _updateSpend(int id, Map params) async {
-    await api.put('spends/$id', params).then((response) {
+    await api.put('expenses/$id', params).then((response) {
       Map data = jsonDecode(response.body);
       bool result = data['result'];
       if (result) {

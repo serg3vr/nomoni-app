@@ -25,9 +25,19 @@ Map<String, String> getHeaders() {
   return {};
 }
 
+Future<http.Response> _inspect(Future<http.Response> resp1) async {
+  http.Response resp = await resp1;
+  if (resp.statusCode == 401) {
+    
+  }
+  return resp;
+}
+
+
 Future<http.Response> get(String url) {
   print('______________________________________________________GET: ' + serverURI + url);
-  return http.get(serverURI + url, headers: getHeaders());
+  return _inspect(http.get(serverURI + url, headers: getHeaders()));
+  // return http.get(serverURI + url, headers: getHeaders());
 }
 
 Future<http.Response> post(String url, dynamic body) {

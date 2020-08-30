@@ -21,25 +21,19 @@ class _ExpensesState extends State<Expenses> {
 
   List<dynamic> expensesList = [];
 
-  @override
-  void initState() {
-    super.initState();
-    // _loadData();
-	}
-
   Future<void> _loadData() async {
 		int id = UserPrefs.instance.id;
-    await api.get('spends/by-user/$id').then((response) {
+    await api.get('expenses/by-user/$id').then((response) {
       Map data = jsonDecode(response.body);
       bool result = data['result'];
       if (result) {
-				expensesList = data['spends'];
+				expensesList = data['expenses'];
       }
     });
   }
 
   Future<void> _deleteSpend(int id) async {
-    await api.delete('spends/$id').then((response) {
+    await api.delete('expenses/$id').then((response) {
       Map data = jsonDecode(response.body);
       bool result = data['result'];
       if (result) {

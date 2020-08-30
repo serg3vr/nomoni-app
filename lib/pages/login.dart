@@ -40,7 +40,15 @@ class _LoginState extends State<Login> {
     });
   }
 
-  _LoginState () {
+  // _LoginState () {
+  //   emailCtrl.text = 'sergioavr93@hotmail.com';
+  //   passwordCtrl.text = '12345';
+  //   _loadPrefs();
+  // }
+
+  @override
+  void initState() {
+    super.initState();
     emailCtrl.text = 'sergioavr93@hotmail.com';
     passwordCtrl.text = '12345';
     _loadPrefs();
@@ -60,14 +68,10 @@ class _LoginState extends State<Login> {
     };
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await api.post('auth/login', body).then((response) {
-      print('<<${response.body}>>');
       Map data = json.decode(response.body);
-      print(data);
       bool result = data['result'];
       prefs.setString('jwt', data['jwt']);
-      // UserPrefs.instance.jwt = prefs.getString('jwt');
       if (result) {
-        // Navigator.pushReplacementNamed(context, '/expenses');
         _loadPrefs();
       } else {
         helpers.showMessage(context, data);
