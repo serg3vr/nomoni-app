@@ -20,10 +20,17 @@ class Expenses extends StatefulWidget {
 class _ExpensesState extends State<Expenses> {
 
   List<dynamic> expensesList = [];
+  Future expensesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    expensesFuture = _loadData();
+  }
 
   Future<void> _loadData() async {
 		int id = UserPrefs.instance.id;
-    await api.get('expenses/by-user/$id').then((response) {
+    return api.get('expenses/by-user/$id').then((response) {
       Map data = jsonDecode(response.body);
       bool result = data['result'];
       if (result) {
@@ -59,7 +66,7 @@ class _ExpensesState extends State<Expenses> {
 						),
 						Expanded(
 							child: FutureBuilder (
-								future: _loadData(),
+								future: expensesFuture,
 								builder: (context, snapshot) {
 									if (snapshot.connectionState == ConnectionState.done) {
 										return Container(

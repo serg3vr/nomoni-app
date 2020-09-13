@@ -29,7 +29,7 @@ class _LoginState extends State<Login> {
 
     UserPrefs.instance.jwt = jwt;
     api.get('users/profile').then((response) {
-      print(response.body);
+      // print(response.body);
       Map data = jsonDecode(response.body);
       bool result = data['result'];
       if (result) {
