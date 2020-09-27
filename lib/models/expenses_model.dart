@@ -8,9 +8,9 @@ class ExpensesModel {
   String concept;
   String date;
   // String note;
-  // int type_id;
+  int typeId;
   int categoryId;
-  // int payment_method_id;
+  int paymentMethodId;
   // int user_id;
 
   ExpensesModel(
@@ -23,9 +23,9 @@ class ExpensesModel {
     this.date,
     this.concept,
     // this.note,
-    // this.type_id,
+    this.typeId,
     this.categoryId,
-    // this.payment_method_id,
+    this.paymentMethodId
   );
 
   ExpensesModel.fromJson(Map<String, dynamic> json): 
@@ -38,9 +38,9 @@ class ExpensesModel {
     date = json['date'],
     concept = json['concept'],
     // note = json['note'],
-    // type_id = json['type_id'],
-    categoryId = json['category_id'];
-    // payment_method_id = json['payment_method_id'],
+    typeId = json['type_id'],
+    categoryId = json['category_id'],
+    paymentMethodId = json['payment_method_id'];
 
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -52,8 +52,8 @@ class ExpensesModel {
     'date': date,
     'concept': concept,
     // 'note': note,
-    // 'type_id': type_id,
+    'type_id': typeId,
     'category_id': categoryId,
-    // 'payment_method_id': payment_method_id,
+    'payment_method_id': paymentMethodId
   };
 }
