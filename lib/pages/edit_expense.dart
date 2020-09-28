@@ -28,14 +28,6 @@ class _EditExpenseState extends State<EditExpense> {
   List<Option> typesOptions = [];
   List<Option> categoriesOptions = [];
   List<Option> paymentMethodsOptions = [];
-  String typesSelectTitle;
-  String categoriesSelectTitle;
-  String paymentMethodSelectTitle;
-  
-  List<DropdownMenuItem<Option>> prueba;
-  // int typesOptId;
-  Option categoriesOptValue;
-  Option paymentMethodsOptValue;
 
   @override
   void initState() {
@@ -45,12 +37,8 @@ class _EditExpenseState extends State<EditExpense> {
   }
 
   Future<void> _loadAll() async {
-    // await _loadOptions();
     print('Termino cara cesot');
     expenseFuture = _loadOptions();
-    typesSelectTitle = 'Types';
-    categoriesSelectTitle = 'Category';
-    paymentMethodSelectTitle = 'Payment method';
   }
 
   @override
@@ -74,23 +62,6 @@ class _EditExpenseState extends State<EditExpense> {
         typeIdController.text = exp.typeId.toString();
         categoryIdController.text = exp.categoryId.toString();
         paymentMethodIdController.text = exp.paymentMethodId.toString();
-        
-        // typeIdController.text = typesOptions.firstWhere((opt) {
-        //   return opt.key == int.parse(typeIdController.text);
-        // }).key.toString() ?? '';
-
-        // categoriesOptValue = categoriesOptions.firstWhere((opt) {
-        //   return opt.key == int.parse(categoryIdController.text);
-        // });
-
-        // paymentMethodsOptValue = paymentMethodsOptions.firstWhere((opt) {
-        //   return opt.key == int.parse(paymentMethodIdController.text);
-        // });
-
-        // typesSelectTitle = 'Type: ' + typesOptValue.value;
-        // categoriesSelectTitle = 'Categoriy: ' + categoriesOptValue.value;
-        // paymentMethodSelectTitle = 'Payment Method: ' + paymentMethodsOptValue.value;
-        // print('entro aqui2');
       }
     });
   }
@@ -195,158 +166,10 @@ class _EditExpenseState extends State<EditExpense> {
                         icon: Icon(Icons.date_range)
                       ),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(top: 8.0),
-                      decoration: BoxDecoration(
-                                    border: Border(
-                                      // top: BorderSide(width: 1.0, color: Color(0xFFFFFFFFFF)),
-                                      // left: BorderSide(width: 1.0, color: Color(0xFFFFFFFFFF)),
-                                      // right: BorderSide(width: 1.0, color: Color(0xFFFF000000)),
-                                      // bottom: BorderSide(width: 2, color: Colors.black26),
-                                    ),
-                                  ),
-                      child: Row(
-                        children: <Widget>[
-                          Container(
-                            margin: EdgeInsets.only(right: 18.0),
-                            child: Icon(
-                              Icons.add_call,
-                              color: Colors.redAccent,
-                              size: 24.0,
-                            ),
-                          ),
-                          Expanded(
-                            child: Container(
-                              // decoration: BoxDecoration(
-                              //         border: Border.all()
-                              //       ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Container(
-                                    child: Text(
-                                      'Type:',
-                                      style: new TextStyle(color: Colors.black54),
-                                    )
-                                  ),
-                                  Center(
-                                    child: Container(
-                                      child: DropdownButton<String>(
-                                        isExpanded: true,
-                                        // hint: Text(typesSelectTitle),
-                                        hint: new Text(
-                                          typesSelectTitle,
-                                          style: new TextStyle(color: Colors.black87),
-                                        ),
-                                        // isExpanded: true,
-                                        // value: Option(int.parse(typeIdController.text), typeIdController.text),
-                                        // items: prueba,
-                                        // value: typesOptValue,
-                                        // items: buildList(typesOptions),
-                                        value: typeIdController.text,
-                                        items: typesOptions.map((Option option) {
-                                          return new DropdownMenuItem<String>(
-                                            value: (option.key).toString(),  
-                                            child: new Text(
-                                              option.value,
-                                              style: new TextStyle(color: Colors.black),
-                                            ),
-                                          );
-                                        }).toList(),
-                                        onChanged: (_) {
-                                          setState(() {
-                                            print(_);
-                                            typeIdController.text = _.toString();
-                                            // typeIdController.text = _.toString();
-                                            // typeIdController.text = _.key.toString();
-                                            // typesSelectTitle = _.value;
-                                            // print(typeIdController.text);
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    /*Container(
-                      child: Row(
-                        children: <Widget>[
-                          Container(
-                            margin: EdgeInsets.only(right: 18.0),
-                            child: Icon(
-                              Icons.person,
-                              color: Colors.redAccent,
-                              size: 24.0,
-                            ),
-                          ),
-                          Container(
-                            child: new DropdownButton<Option>(
-                              hint: Text(categoriesSelectTitle),
-                              // isExpanded: true,
-                              value: categoriesOptValue,
-                              items: categoriesOptions.map((Option option) {
-                                return new DropdownMenuItem<Option>(
-                                  value: option,  
-                                  child: new Text(
-                                    option.value,
-                                    style: new TextStyle(color: Colors.black),
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (_) {
-                                setState(() {
-                                  categoryIdController.text = _.key.toString();
-                                  categoriesSelectTitle = 'Category: ' + _.value;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      child: Row(
-                        children: <Widget>[
-                          Container(
-                            margin: EdgeInsets.only(right: 18.0),
-                            child: Icon(
-                              Icons.add_a_photo,
-                              color: Colors.redAccent,
-                              size: 24.0,
-                            ),
-                          ),
-                          Container(
-                            child: new DropdownButton<Option>(
-                              hint: Text(paymentMethodSelectTitle),
-                              // isExpanded: true,
-                              value: paymentMethodsOptValue,
-                              items: paymentMethodsOptions.map((Option option) {
-                                return new DropdownMenuItem<Option>(
-                                  value: option,  
-                                  child: new Text(
-                                    option.value,
-                                    style: new TextStyle(color: Colors.black),
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (_) {
-                                setState(() {
-                                  paymentMethodIdController.text = _.key.toString();
-                                  paymentMethodSelectTitle = 'Payment method: ' + _.value;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    */RaisedButton(
+                    buildTypeContainer(),
+                    buildCategoryList(),
+                    buildPaymentMethodList(),
+                    RaisedButton(
                       onPressed: () {
                         Map params = {
                           'amount': amountController.text,
@@ -358,7 +181,6 @@ class _EditExpenseState extends State<EditExpense> {
                           'payment_method_id': paymentMethodIdController.text
                         };
                         _updateSpend(widget.id, params);
-                        // print(params);
                       },
                       child: Text('Save'),
                     ),
@@ -374,6 +196,176 @@ class _EditExpenseState extends State<EditExpense> {
     );
   }
 
+  Container buildTypeContainer() {
+    return Container(
+      margin: EdgeInsets.only(top: 8.0),
+      child: Row(
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(right: 18.0),
+            child: Icon(
+              Icons.add_call,
+              color: Colors.redAccent,
+              size: 24.0,
+            ),
+          ),
+          Expanded(
+            child: Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    child: Text(
+                      'Type:',
+                      style: new TextStyle(color: Colors.black54),
+                    )
+                  ),
+                  Center(
+                    child: Container(
+                      child: DropdownButton<String>(
+                        isExpanded: true,
+                        value: typeIdController.text,
+                        items: typesOptions.map((Option option) {
+                          return new DropdownMenuItem<String>(
+                            value: (option.key).toString(),  
+                            child: new Text(
+                              option.value,
+                              style: new TextStyle(color: Colors.black),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (_) {
+                          setState(() {
+                            typeIdController.text = _.toString();
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Container buildCategoryList() {
+    return Container(
+      margin: EdgeInsets.only(top: 8.0),
+      child: Row(
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(right: 18.0),
+            child: Icon(
+              Icons.add_call,
+              color: Colors.redAccent,
+              size: 24.0,
+            ),
+          ),
+          Expanded(
+            child: Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    child: Text(
+                      'Category:',
+                      style: new TextStyle(color: Colors.black54),
+                    )
+                  ),
+                  Center(
+                    child: Container(
+                      child: DropdownButton<String>(
+                        isExpanded: true,
+                        value: categoryIdController.text,
+                        items: categoriesOptions.map((Option option) {
+                          return new DropdownMenuItem<String>(
+                            value: (option.key).toString(),  
+                            child: new Text(
+                              option.value,
+                              style: new TextStyle(color: Colors.black),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (_) {
+                          setState(() {
+                            // typeIdController.text = _.toString();
+                            categoryIdController.text = _.toString();
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Container buildPaymentMethodList() {
+    return Container(
+      margin: EdgeInsets.only(top: 8.0),
+      child: Row(
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(right: 18.0),
+            child: Icon(
+              Icons.add_call,
+              color: Colors.redAccent,
+              size: 24.0,
+            ),
+          ),
+          Expanded(
+            child: Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    child: Text(
+                      'Payment method:',
+                      style: new TextStyle(color: Colors.black54),
+                    )
+                  ),
+                  Center(
+                    child: Container(
+                      child: DropdownButton<String>(
+                        isExpanded: true,
+                        value: paymentMethodIdController.text,
+                        items: paymentMethodsOptions.map((Option option) {
+                          return new DropdownMenuItem<String>(
+                            value: (option.key).toString(),  
+                            child: new Text(
+                              option.value,
+                              style: new TextStyle(color: Colors.black),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (_) {
+                          setState(() {
+                            // typeIdController.text = _.toString();
+                            paymentMethodIdController.text = _.toString();
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  
   List<DropdownMenuItem<dynamic>> buildList(List<Option> list) {
     return list.map((Option option) {
       return new DropdownMenuItem<Option>(
