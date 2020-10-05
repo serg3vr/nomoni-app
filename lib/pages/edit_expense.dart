@@ -1,5 +1,7 @@
+
 import 'package:flutter/material.dart';
 import 'package:nomoni_app/comm/option.dart';
+import 'package:nomoni_app/widgets/OwnDropdown.dart';
 import '../models/expenses_model.dart';
 import 'dart:convert';
 import 'package:nomoni_app/utils/api.dart' as api;
@@ -61,7 +63,7 @@ class _EditExpenseState extends State<EditExpense> {
         dateController.text = exp.date;
         typeIdController.text = exp.typeId.toString();
         categoryIdController.text = exp.categoryId.toString();
-        paymentMethodIdController.text = exp.paymentMethodId.toString();
+        paymentMethodIdController.text = (exp.paymentMethodId ?? '').toString();
       }
     });
   }
@@ -73,22 +75,24 @@ class _EditExpenseState extends State<EditExpense> {
       if (result) {
         List<dynamic> opt = data['options'];
         if (opt.length > 0) {
+          // typesOptions = Option.map(opt);
           typesOptions = opt.map((dynamic option) {
-            return Option(option['value'], option['label']);
+            return Option(option['value'].toString(), option['label'].toString());
           }).toList();
         }				
       }
     });
     
-    await api.get('categories/options').then((response) {
+    /*await api.get('categories/options').then((response) {
       Map data = jsonDecode(response.body);
       bool result = data['result'];
       if (result) {
         List<dynamic> opt = data['options'];
         if (opt.length > 0) {
-          categoriesOptions = opt.map((dynamic option) {
-            return Option(option['value'], option['label']);
-          }).toList();
+          categoriesOptions = Option.map(opt);
+          // categoriesOptions = opt.map((dynamic option) {
+          //   return Option(option['value'], option['label']);
+          // }).toList();
         }				
       }
     });
@@ -99,19 +103,24 @@ class _EditExpenseState extends State<EditExpense> {
       if (result) {
         List<dynamic> opt = data['options'];
         if (opt.length > 0) {
-          paymentMethodsOptions = opt.map((dynamic option) {
-            return Option(option['value'], option['label']);
-          }).toList();
-        }				
+          paymentMethodsOptions = Option.map(opt);
+          // paymentMethodsOptions = opt.map((dynamic option) {
+          //   return Option(option['value'], option['label']);
+          // }).toList();
+        }
+        // Null porque no es obligatorio				
+        paymentMethodsOptions.add(Option('', ''));
       }
-    });
+    });*/
 
     return _loadData(widget.id);
   }
 
   Future<void> _updateSpend(int id, Map params) async {
+    // params['payment_method_id'] = (params['payment_method_id'] == 'null') ? null: params['payment_method_id'];
     await api.put('expenses/$id', params).then((response) {
       Map data = jsonDecode(response.body);
+      print(data);
       bool result = data['result'];
       if (result) {
         Navigator.pushReplacementNamed(context, '/expenses');
@@ -166,9 +175,37 @@ class _EditExpenseState extends State<EditExpense> {
                         icon: Icon(Icons.date_range)
                       ),
                     ),
-                    buildTypeContainer(),
-                    buildCategoryList(),
-                    buildPaymentMethodList(),
+                    // buildTypeContainer(),
+                    createDropdown(
+                      controller: typeIdController,
+                      dropdownName: 'Type',
+                      listOption: typesOptions,
+                      onChanged: (_) {
+                        setState(() {
+                          typeIdController.text = _; // .toString();
+                        });
+                      }
+                    ),
+                    // createDropdown(
+                    //   controller: categoryIdController,
+                    //   dropdownName: 'Category',
+                    //   listOption: categoriesOptions,
+                    //   onChanged: (_) {
+                    //     setState(() {
+                    //       categoryIdController.text = _; // .toString();
+                    //     });
+                    //   }
+                    // ),
+                    // createDropdown(
+                    //   controller: paymentMethodIdController,
+                    //   dropdownName: 'Payment method',
+                    //   listOption: paymentMethodsOptions,
+                    //   onChanged: (_) {
+                    //     setState(() {
+                    //       paymentMethodIdController.text = _; // .toString();
+                    //     });
+                    //   }
+                    // ),
                     RaisedButton(
                       onPressed: () {
                         Map params = {
@@ -180,6 +217,7 @@ class _EditExpenseState extends State<EditExpense> {
                           'category_id': categoryIdController.text,
                           'payment_method_id': paymentMethodIdController.text
                         };
+                        // print(params);
                         _updateSpend(widget.id, params);
                       },
                       child: Text('Save'),
@@ -194,187 +232,5 @@ class _EditExpenseState extends State<EditExpense> {
         ),
       )
     );
-  }
-
-  Container buildTypeContainer() {
-    return Container(
-      margin: EdgeInsets.only(top: 8.0),
-      child: Row(
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(right: 18.0),
-            child: Icon(
-              Icons.add_call,
-              color: Colors.redAccent,
-              size: 24.0,
-            ),
-          ),
-          Expanded(
-            child: Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    child: Text(
-                      'Type:',
-                      style: new TextStyle(color: Colors.black54),
-                    )
-                  ),
-                  Center(
-                    child: Container(
-                      child: DropdownButton<String>(
-                        isExpanded: true,
-                        value: typeIdController.text,
-                        items: typesOptions.map((Option option) {
-                          return new DropdownMenuItem<String>(
-                            value: (option.key).toString(),  
-                            child: new Text(
-                              option.value,
-                              style: new TextStyle(color: Colors.black),
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: (_) {
-                          setState(() {
-                            typeIdController.text = _.toString();
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              )
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Container buildCategoryList() {
-    return Container(
-      margin: EdgeInsets.only(top: 8.0),
-      child: Row(
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(right: 18.0),
-            child: Icon(
-              Icons.add_call,
-              color: Colors.redAccent,
-              size: 24.0,
-            ),
-          ),
-          Expanded(
-            child: Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    child: Text(
-                      'Category:',
-                      style: new TextStyle(color: Colors.black54),
-                    )
-                  ),
-                  Center(
-                    child: Container(
-                      child: DropdownButton<String>(
-                        isExpanded: true,
-                        value: categoryIdController.text,
-                        items: categoriesOptions.map((Option option) {
-                          return new DropdownMenuItem<String>(
-                            value: (option.key).toString(),  
-                            child: new Text(
-                              option.value,
-                              style: new TextStyle(color: Colors.black),
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: (_) {
-                          setState(() {
-                            // typeIdController.text = _.toString();
-                            categoryIdController.text = _.toString();
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              )
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Container buildPaymentMethodList() {
-    return Container(
-      margin: EdgeInsets.only(top: 8.0),
-      child: Row(
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(right: 18.0),
-            child: Icon(
-              Icons.add_call,
-              color: Colors.redAccent,
-              size: 24.0,
-            ),
-          ),
-          Expanded(
-            child: Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    child: Text(
-                      'Payment method:',
-                      style: new TextStyle(color: Colors.black54),
-                    )
-                  ),
-                  Center(
-                    child: Container(
-                      child: DropdownButton<String>(
-                        isExpanded: true,
-                        value: paymentMethodIdController.text,
-                        items: paymentMethodsOptions.map((Option option) {
-                          return new DropdownMenuItem<String>(
-                            value: (option.key).toString(),  
-                            child: new Text(
-                              option.value,
-                              style: new TextStyle(color: Colors.black),
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: (_) {
-                          setState(() {
-                            // typeIdController.text = _.toString();
-                            paymentMethodIdController.text = _.toString();
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              )
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-  
-  List<DropdownMenuItem<dynamic>> buildList(List<Option> list) {
-    return list.map((Option option) {
-      return new DropdownMenuItem<Option>(
-        value: option,  
-        child: new Text(
-          option.value,
-          style: new TextStyle(color: Colors.black),
-        ),
-      );
-    }).toList();
   }
 }
