@@ -47,7 +47,9 @@ class _EditExpenseState extends State<EditExpense> {
     amountController.dispose();
     conceptController.dispose();
     dateController.dispose();
+    typeIdController.dispose();
     categoryIdController.dispose();
+    paymentMethodIdController.dispose();
     super.dispose();
   }
 
@@ -82,12 +84,6 @@ class _EditExpenseState extends State<EditExpense> {
       bool result = data['result'];
       if (result) {
         typesOptions = Option.map(data['options']);
-        // List<dynamic> opt = data['options'];
-        // if (opt.length > 0) {
-        //   typesOptions = opt.map((dynamic option) {
-        //     return Option(option['value'].toString(), option['label'].toString());
-        //   }).toList();
-        // }				
       }
     });
 
@@ -96,12 +92,6 @@ class _EditExpenseState extends State<EditExpense> {
       bool result = data['result'];
       if (result) {
         categoriesOptions = Option.map(data['options']);
-        // List<dynamic> opt = data['options'];
-        // if (opt.length > 0) {
-        //   categoriesOptions = opt.map((dynamic option) {
-        //     return Option(option['value'].toString(), option['label'].toString());
-        //   }).toList();
-        // }				
       }
     });
 
@@ -110,13 +100,6 @@ class _EditExpenseState extends State<EditExpense> {
       bool result = data['result'];
       if (result) {
         paymentMethodsOptions = Option.map(data['options']);
-        // List<dynamic> opt = data['options'];
-        // if (opt.length > 0) {
-        //   paymentMethodsOptions = opt.map((dynamic option) {
-        //     return Option(option['value'].toString(), option['label'].toString());
-        //   }).toList();
-        // }
-        paymentMethodsOptions.add(Option('', ''));
       }
     });
 
@@ -124,7 +107,6 @@ class _EditExpenseState extends State<EditExpense> {
   }
 
   Future<void> _updateSpend(int id, Map params) async {
-    // params['payment_method_id'] = (params['payment_method_id'] == 'null') ? null: params['payment_method_id'];
     await api.put('expenses/$id', params).then((response) {
       Map data = jsonDecode(response.body);
       print(data);

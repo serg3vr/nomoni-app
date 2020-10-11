@@ -8,7 +8,6 @@ Container createDropdown({
   TextEditingController controller,
   Function onChanged
   }) {
-    // DropdownMenuItem<> list = [];
     return Container(
       margin: EdgeInsets.only(top: 8.0),
       child: Row(
@@ -36,11 +35,9 @@ Container createDropdown({
                   Center(
                     child: DropdownButton<String>(
                       isExpanded: true,
-                      // value: (controller.text ?? '').toString(),
-                      value: controller.text,
+                      value: controller.text.length > 0 ? controller.text : null,
                       items: listOption.map((Option option) {
                         return DropdownMenuItem<String>(
-                          // value: (option.key ?? '').toString(),
                           value: (option.key.toString()),
                           child: new Text(
                             option.value,
@@ -49,11 +46,6 @@ Container createDropdown({
                         );
                       }).toList(),
                       onChanged: onChanged,
-                      // onChanged: (_) {
-                      //   setState(() {
-                      //     controller.text = _.toString();
-                      //   });
-                      // },
                     ),
                   ),
                 ],

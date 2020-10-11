@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart';
 import 'package:nomoni_app/comm/option.dart';
 import 'dart:convert';
 import 'package:nomoni_app/utils/api.dart' as api;
+import 'package:nomoni_app/widgets/OwnDropdown.dart';
 
 class AddExpense extends StatefulWidget {
   final String title;
@@ -15,7 +15,7 @@ class AddExpense extends StatefulWidget {
 }
 
 class _AddExpenseState extends State<AddExpense> {
-  Future options;
+  Future optionsFuture;
   final amountController = TextEditingController();
   final conceptController = TextEditingController();
   final dateController = TextEditingController();
@@ -26,19 +26,13 @@ class _AddExpenseState extends State<AddExpense> {
   List<Option> typesOptions = [];
   List<Option> categoriesOptions = [];
   List<Option> paymentMethodsOptions = [];
-  String typesSelectTitle;
-  String categoriesSelectTitle;
-  String paymentMethodSelectTitle;
 
   @override
   void initState() {
     super.initState();
     var now = new DateTime.now();
     dateController.text = now.toString();
-    typesSelectTitle = 'Types';
-    categoriesSelectTitle = 'Category';
-    paymentMethodSelectTitle = 'Payment method';
-    options = _loadData();
+    optionsFuture = _loadData();
 	}
 
   Future<void> _loadData() async {
@@ -46,12 +40,7 @@ class _AddExpenseState extends State<AddExpense> {
       Map data = jsonDecode(response.body);
       bool result = data['result'];
       if (result) {
-        List<dynamic> opt = data['options'];
-        if (opt.length > 0) {
-          typesOptions = opt.map((dynamic option) {
-            return Option(option['value'], option['label']);
-          }).toList();
-        }				
+        typesOptions = Option.map(data['options']);
       }
     });
     
@@ -59,25 +48,15 @@ class _AddExpenseState extends State<AddExpense> {
       Map data = jsonDecode(response.body);
       bool result = data['result'];
       if (result) {
-        List<dynamic> opt = data['options'];
-        if (opt.length > 0) {
-          categoriesOptions = opt.map((dynamic option) {
-            return Option(option['value'], option['label']);
-          }).toList();
-        }				
+        categoriesOptions = Option.map(data['options']);
       }
     });
 
-    return api.get('payment-methods/options').then((response) {
+    return await api.get('payment-methods/options').then((response) {
       Map data = jsonDecode(response.body);
       bool result = data['result'];
       if (result) {
-        List<dynamic> opt = data['options'];
-        if (opt.length > 0) {
-          paymentMethodsOptions = opt.map((dynamic option) {
-            return Option(option['value'], option['label']);
-          }).toList();
-        }				
+        paymentMethodsOptions = Option.map(data['options']);
       }
     });
   }
@@ -86,6 +65,10 @@ class _AddExpenseState extends State<AddExpense> {
   void dispose() {
     amountController.dispose();
     conceptController.dispose();
+    dateController.dispose();
+    typeIdController.dispose();
+    categoryIdController.dispose();
+    paymentMethodIdController.dispose();
     super.dispose();
   }
 
@@ -110,7 +93,7 @@ class _AddExpenseState extends State<AddExpense> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: FutureBuilder(
-            future: options,
+            future: optionsFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 return Column(
@@ -145,112 +128,36 @@ class _AddExpenseState extends State<AddExpense> {
                         icon: Icon(Icons.date_range)
                       ),
                     ),
-                    Container(
-                      child: Row(
-                        children: <Widget>[
-                          Container(
-                            margin: EdgeInsets.only(right: 18.0),
-                            child: Icon(
-                              Icons.merge_type,
-                              color: Colors.redAccent,
-                              size: 24.0,
-                            ),
-                          ),
-                          Container(
-                            child: new DropdownButton<Option>(
-                              hint: Text(typesSelectTitle),
-                              // isExpanded: true,
-                              items: typesOptions.map((Option option) {
-                                return new DropdownMenuItem<Option>(
-                                  value: option,  
-                                  child: new Text(
-                                    option.value,
-                                    style: new TextStyle(color: Colors.black),
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (_) {
-                                setState(() {
-                                  typeIdController.text = _.key.toString();
-                                  typesSelectTitle = 'Type: ' + _.value;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
+                    createDropdown(
+                      controller: typeIdController,
+                      dropdownName: 'Type',
+                      listOption: typesOptions,
+                      onChanged: (_) {
+                        setState(() {
+                          typeIdController.text = _; // .toString();
+                        });
+                      }
                     ),
-                    Container(
-                      child: Row(
-                        children: <Widget>[
-                          Container(
-                            margin: EdgeInsets.only(right: 18.0),
-                            child: Icon(
-                              Icons.person,
-                              color: Colors.redAccent,
-                              size: 24.0,
-                            ),
-                          ),
-                          Container(
-                            child: new DropdownButton<Option>(
-                              hint: Text(categoriesSelectTitle),
-                              // isExpanded: true,
-                              items: categoriesOptions.map((Option option) {
-                                return new DropdownMenuItem<Option>(
-                                  value: option,  
-                                  child: new Text(
-                                    option.value,
-                                    style: new TextStyle(color: Colors.black),
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (_) {
-                                setState(() {
-                                  categoryIdController.text = _.key.toString();
-                                  categoriesSelectTitle = 'Category: ' + _.value;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
+                    createDropdown(
+                      controller: categoryIdController,
+                      dropdownName: 'Category',
+                      listOption: categoriesOptions,
+                      onChanged: (_) {
+                        setState(() {
+                          categoryIdController.text = _; // .toString();
+                        });
+                      }
                     ),
-                    Container(
-                      child: Row(
-                        children: <Widget>[
-                          Container(
-                            margin: EdgeInsets.only(right: 18.0),
-                            child: Icon(
-                              Icons.add_a_photo,
-                              color: Colors.redAccent,
-                              size: 24.0,
-                            ),
-                          ),
-                          Container(
-                            child: new DropdownButton<Option>(
-                              hint: Text(paymentMethodSelectTitle),
-                              // isExpanded: true,
-                              items: paymentMethodsOptions.map((Option option) {
-                                return new DropdownMenuItem<Option>(
-                                  value: option,  
-                                  child: new Text(
-                                    option.value,
-                                    style: new TextStyle(color: Colors.black),
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (_) {
-                                setState(() {
-                                  paymentMethodIdController.text = _.key.toString();
-                                  paymentMethodSelectTitle = 'Payment method: ' + _.value;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
+                    createDropdown(
+                      controller: paymentMethodIdController,
+                      dropdownName: 'Payment method',
+                      listOption: paymentMethodsOptions,
+                      onChanged: (_) {
+                        setState(() {
+                          paymentMethodIdController.text = _; // .toString();
+                        });
+                      }
                     ),
-                    
                     RaisedButton(
                       onPressed: () {
                         Map params = {
