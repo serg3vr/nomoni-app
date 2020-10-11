@@ -39,7 +39,6 @@ class _EditExpenseState extends State<EditExpense> {
   }
 
   Future<void> _loadAll() async {
-    print('Termino cara cesot');
     expenseFuture = _loadOptions();
   }
 
@@ -64,6 +63,15 @@ class _EditExpenseState extends State<EditExpense> {
         typeIdController.text = exp.typeId.toString();
         categoryIdController.text = exp.categoryId.toString();
         paymentMethodIdController.text = (exp.paymentMethodId ?? '').toString();
+        print('asd ${paymentMethodIdController.text}');
+        for (var option in paymentMethodsOptions) {
+          print(option.key);
+          if (option.key == paymentMethodIdController.text) {
+            print('si');
+          } else {
+            print('no');
+          }
+        }
       }
     });
   }
@@ -73,27 +81,27 @@ class _EditExpenseState extends State<EditExpense> {
       Map data = jsonDecode(response.body);
       bool result = data['result'];
       if (result) {
-        List<dynamic> opt = data['options'];
-        if (opt.length > 0) {
-          // typesOptions = Option.map(opt);
-          typesOptions = opt.map((dynamic option) {
-            return Option(option['value'].toString(), option['label'].toString());
-          }).toList();
-        }				
+        typesOptions = Option.map(data['options']);
+        // List<dynamic> opt = data['options'];
+        // if (opt.length > 0) {
+        //   typesOptions = opt.map((dynamic option) {
+        //     return Option(option['value'].toString(), option['label'].toString());
+        //   }).toList();
+        // }				
       }
     });
-    
-    /*await api.get('categories/options').then((response) {
+
+    await api.get('categories/options').then((response) {
       Map data = jsonDecode(response.body);
       bool result = data['result'];
       if (result) {
-        List<dynamic> opt = data['options'];
-        if (opt.length > 0) {
-          categoriesOptions = Option.map(opt);
-          // categoriesOptions = opt.map((dynamic option) {
-          //   return Option(option['value'], option['label']);
-          // }).toList();
-        }				
+        categoriesOptions = Option.map(data['options']);
+        // List<dynamic> opt = data['options'];
+        // if (opt.length > 0) {
+        //   categoriesOptions = opt.map((dynamic option) {
+        //     return Option(option['value'].toString(), option['label'].toString());
+        //   }).toList();
+        // }				
       }
     });
 
@@ -101,17 +109,16 @@ class _EditExpenseState extends State<EditExpense> {
       Map data = jsonDecode(response.body);
       bool result = data['result'];
       if (result) {
-        List<dynamic> opt = data['options'];
-        if (opt.length > 0) {
-          paymentMethodsOptions = Option.map(opt);
-          // paymentMethodsOptions = opt.map((dynamic option) {
-          //   return Option(option['value'], option['label']);
-          // }).toList();
-        }
-        // Null porque no es obligatorio				
+        paymentMethodsOptions = Option.map(data['options']);
+        // List<dynamic> opt = data['options'];
+        // if (opt.length > 0) {
+        //   paymentMethodsOptions = opt.map((dynamic option) {
+        //     return Option(option['value'].toString(), option['label'].toString());
+        //   }).toList();
+        // }
         paymentMethodsOptions.add(Option('', ''));
       }
-    });*/
+    });
 
     return _loadData(widget.id);
   }
@@ -186,26 +193,26 @@ class _EditExpenseState extends State<EditExpense> {
                         });
                       }
                     ),
-                    // createDropdown(
-                    //   controller: categoryIdController,
-                    //   dropdownName: 'Category',
-                    //   listOption: categoriesOptions,
-                    //   onChanged: (_) {
-                    //     setState(() {
-                    //       categoryIdController.text = _; // .toString();
-                    //     });
-                    //   }
-                    // ),
-                    // createDropdown(
-                    //   controller: paymentMethodIdController,
-                    //   dropdownName: 'Payment method',
-                    //   listOption: paymentMethodsOptions,
-                    //   onChanged: (_) {
-                    //     setState(() {
-                    //       paymentMethodIdController.text = _; // .toString();
-                    //     });
-                    //   }
-                    // ),
+                    createDropdown(
+                      controller: categoryIdController,
+                      dropdownName: 'Category',
+                      listOption: categoriesOptions,
+                      onChanged: (_) {
+                        setState(() {
+                          categoryIdController.text = _; // .toString();
+                        });
+                      }
+                    ),
+                    createDropdown(
+                      controller: paymentMethodIdController,
+                      dropdownName: 'Payment method',
+                      listOption: paymentMethodsOptions,
+                      onChanged: (_) {
+                        setState(() {
+                          paymentMethodIdController.text = _; // .toString();
+                        });
+                      }
+                    ),
                     RaisedButton(
                       onPressed: () {
                         Map params = {
