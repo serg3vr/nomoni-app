@@ -1,12 +1,12 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nomoni_app/models/expenses_model.dart';
 import 'package:nomoni_app/pages/edit_expense.dart';
 import 'package:nomoni_app/utils/user_prefs.dart';
 import 'dart:convert';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:nomoni_app/utils/api.dart' as api;
+import 'package:nomoni_app/widgets/MyDrawer.dart';
 
 class Expenses extends StatefulWidget {
   final String title;
@@ -56,6 +56,7 @@ class _ExpensesState extends State<Expenses> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
+      drawer: MyDrawer(),
       body: Container(
 				child: Column(
 					children: <Widget>[

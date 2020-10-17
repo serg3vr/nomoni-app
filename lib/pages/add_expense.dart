@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:nomoni_app/comm/option.dart';
 import 'dart:convert';
 import 'package:nomoni_app/utils/api.dart' as api;
+import 'package:nomoni_app/widgets/MyDrawer.dart';
 import 'package:nomoni_app/widgets/OwnDropdown.dart';
 
 class AddExpense extends StatefulWidget {
@@ -89,6 +90,7 @@ class _AddExpenseState extends State<AddExpense> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
+      drawer: MyDrawer(),
       body: Container(
         child: Padding(
           padding: const EdgeInsets.all(8.0),

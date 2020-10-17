@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:nomoni_app/comm/option.dart';
+import 'package:nomoni_app/widgets/MyDrawer.dart';
 import 'package:nomoni_app/widgets/OwnDropdown.dart';
 import '../models/expenses_model.dart';
 import 'dart:convert';
@@ -125,6 +126,7 @@ class _EditExpenseState extends State<EditExpense> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
+      drawer: MyDrawer(),
       body: Container(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
