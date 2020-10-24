@@ -40,17 +40,9 @@ class _LoginState extends State<Login> {
     });
   }
 
-  // _LoginState () {
-  //   emailCtrl.text = 'sergioavr93@hotmail.com';
-  //   passwordCtrl.text = '12345';
-  //   _loadPrefs();
-  // }
-
   @override
   void initState() {
     super.initState();
-    emailCtrl.text = 'sergioavr93@hotmail.com';
-    passwordCtrl.text = '12345';
     _loadPrefs();
   }
 
