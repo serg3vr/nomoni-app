@@ -119,7 +119,7 @@ class _AddExpenseState extends State<AddExpense> {
                       decoration: InputDecoration(
                         hintText: 'Concept: ',
                         labelText: 'Concept: ',
-                      )
+                      ),
                     ),
                     TextFormField(
                       controller: dateController,
@@ -127,7 +127,23 @@ class _AddExpenseState extends State<AddExpense> {
                       decoration: InputDecoration(
                         hintText: 'Date: ',
                         labelText: 'Date: ',
-                        icon: Icon(Icons.date_range)
+                        icon: IconButton(
+                          icon: Icon(Icons.date_range),
+                          onPressed: () {
+                            showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2025),
+                            ).then((date) {
+                              setState(() {
+                                if (date != null) {
+                                  dateController.text = date.toString();
+                                }
+                              });
+                            });
+                          },
+                        )
                       ),
                     ),
                     createDropdown(

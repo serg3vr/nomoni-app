@@ -157,13 +157,38 @@ class _EditExpenseState extends State<EditExpense> {
                         labelText: 'Concept: ',
                       )
                     ),
+                    // TextFormField(
+                    //   controller: dateController,
+                    //   keyboardType: TextInputType.datetime,
+                    //   decoration: InputDecoration(
+                    //     hintText: 'Date: ',
+                    //     labelText: 'Date: ',
+                    //     icon: Icon(Icons.date_range)
+                    //   ),
+                    // ),
                     TextFormField(
                       controller: dateController,
                       keyboardType: TextInputType.datetime,
                       decoration: InputDecoration(
                         hintText: 'Date: ',
                         labelText: 'Date: ',
-                        icon: Icon(Icons.date_range)
+                        icon: IconButton(
+                          icon: Icon(Icons.date_range),
+                          onPressed: () {
+                            showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2025),
+                            ).then((date) {
+                              setState(() {
+                                if (date != null) {
+                                  dateController.text = date.toString();
+                                }
+                              });
+                            });
+                          },
+                        )
                       ),
                     ),
                     // buildTypeContainer(),
