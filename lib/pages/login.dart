@@ -35,7 +35,7 @@ class _LoginState extends State<Login> {
       if (result) {
         UserPrefs.instance.id = data['user']['id'];
         // print('D: Este es el id ${UserPrefs.instance.id}');
-        Navigator.pushReplacementNamed(context, '/expenses');
+        Navigator.pushReplacementNamed(context, '/dashboard');
       }
     });
   }
@@ -43,6 +43,8 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     super.initState();
+    emailCtrl.text = 'sergioavr93@hotmail.com';
+    passwordCtrl.text = '12345';
     _loadPrefs();
   }
 
