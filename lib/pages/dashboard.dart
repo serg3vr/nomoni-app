@@ -1,10 +1,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nomoni_app/pages/edit_expense.dart';
-import 'package:nomoni_app/utils/user_prefs.dart';
 import 'dart:convert';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:nomoni_app/utils/api.dart' as api;
 import 'package:nomoni_app/widgets/MyDrawer.dart';
 
@@ -55,75 +52,7 @@ class _DashboardState extends State<Dashboard> {
         title: Text(widget.title),
       ),
       drawer: MyDrawer(),
-      body: Container(
-				child: Column(
-					children: <Widget>[
-            Text(
-							'Expenses summary',
-							textAlign: TextAlign.center,
-							overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 22.0
-              ),
-						),
-            SizedBox(height: 6,),
-						Text(
-							'\$ $monthlyAmount',
-							textAlign: TextAlign.center,
-							overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 28.0
-              ),
-						),
-            Text(
-							'Current monthly expenses',
-							textAlign: TextAlign.center,
-							overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 18.0,
-                color: Colors.blueGrey
-              ),
-						),
-            SizedBox(height: 6,),
-            SizedBox(height: 6,),
-						Text(
-							'\$ $dailyAmount',
-							textAlign: TextAlign.center,
-							overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 28.0
-              ),
-						),
-            Text(
-							'Current daily expenses',
-							textAlign: TextAlign.center,
-							overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 18.0,
-                color: Colors.blueGrey
-              ),
-						),
-            SizedBox(height: 6,),
-						Expanded(
-							child: FutureBuilder (
-								future: future,
-								builder: (context, snapshot) {
-									if (snapshot.connectionState == ConnectionState.done) {
-										return Container();
-									} else {
-										return CircularProgressIndicator();
-									}
-								}
-							),
-						),
-					]
-				)
-			),
+      body: bodyWidget(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(context, '/add_expense');
@@ -132,5 +61,74 @@ class _DashboardState extends State<Dashboard> {
         child: Icon(Icons.add),
       ),
     );
+  }
+
+  Widget bodyWidget() {
+    return FutureBuilder (
+      future: future,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Text(
+                  'Expenses summary',
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 22.0
+                  ),
+                ),
+                SizedBox(height: 24,),
+                Text(
+                  '\$ $monthlyAmount',
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 32.0
+                  ),
+                ),
+                Text(
+                  'Current monthly expenses',
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 18.0,
+                    color: Colors.grey[400]
+                  ),
+                ),
+                SizedBox(height: 24,),
+                Text(
+                  '\$ $dailyAmount',
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 28.0
+                  ),
+                ),
+                Text(
+                  'Current daily expenses',
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 18.0,
+                    color: Colors.grey[400]
+                  ),
+                ),
+              ]
+            )
+          );
+        } else {
+          return CircularProgressIndicator();
+        }
+      }
+    );  
   }
 }
