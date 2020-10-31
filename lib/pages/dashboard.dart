@@ -17,6 +17,7 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
 
   List<dynamic> expensesList = [];
+  List<dynamic> typesList = [];
   Future future;
   double dailyAmount = 0;
   double monthlyAmount = 0;
@@ -137,7 +138,7 @@ class _DashboardState extends State<Dashboard> {
                 //////////////////////////////////////////////////
                 //////////////////////////////////////////////////
                 Text(
-                  'Categories',
+                  'Expenses',
                   // textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -147,7 +148,7 @@ class _DashboardState extends State<Dashboard> {
                   ),
                 ),
                 Text(
-                  'Overview of Expenses by Category',
+                  'Overview of Last five months of Expenses',
                   // textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
