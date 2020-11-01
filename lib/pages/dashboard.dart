@@ -35,7 +35,6 @@ class _DashboardState extends State<Dashboard> {
       bool result = data['result'];
       if (result) {
         monthlyAmount = double.parse(data['amount']);
-        print(monthlyAmount);
       }
     });
     
@@ -50,7 +49,6 @@ class _DashboardState extends State<Dashboard> {
     // Expenses by categories
     await api.get('expenses/by-categories').then((response) {
       Map data = jsonDecode(response.body);
-      print(response.body);
       bool result = data['result'];
       if (result) {
         categoriesList = data['expenses'];
@@ -60,7 +58,6 @@ class _DashboardState extends State<Dashboard> {
     // Expenses by types
     await api.get('expenses/by-types').then((response) {
       Map data = jsonDecode(response.body);
-      print(response.body);
       bool result = data['result'];
       if (result) {
         typesList = data['expenses'];
@@ -70,7 +67,6 @@ class _DashboardState extends State<Dashboard> {
     // // Expenses by payment methods
     await api.get('expenses/by-payment-methods').then((response) {
       Map data = jsonDecode(response.body);
-      print(response.body);
       bool result = data['result'];
       if (result) {
         paymentMethodsList = data['expenses'];
@@ -112,6 +108,7 @@ class _DashboardState extends State<Dashboard> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return Container(
+            // color: Colors.amber,
             margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -176,12 +173,7 @@ class _DashboardState extends State<Dashboard> {
                 expensesByTypesWidget(),
                 SizedBox(height: 24,),
                 expensesByPaymentMethodsWidget(),
-                RaisedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/expenses');
-                  },
-                  child: Text('Expenses'),
-                ),
+                squareSectionWidget(),
                 //////////////////////////////////////////////////
                 //////////////////////////////////////////////////
               ]
@@ -426,4 +418,72 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+  Widget squareSectionWidget() {
+    return Container(
+      // color: Colors.green,
+      // height: 360.0,
+      child: Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: <Widget>[
+                singleSquareWidget(),
+                singleSquareWidget()
+              ]
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: <Widget>[
+                singleSquareWidget(),
+                singleSquareWidget()
+              ]
+            ),
+          )
+        ]
+      )
+    );
+  }
+
+  Widget singleSquareWidget() {
+    return InkWell(
+      onTap: () {
+        Navigator.pushNamed(context, '/expenses');
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.red,
+          ),
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+          // color: Colors.red[400]
+        ),
+        padding: const EdgeInsets.all(16),
+        margin: EdgeInsets.all(16),
+        // color: Colors.teal[100],
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(
+              Icons.money_off,
+              size: 34,
+              ),
+            Text(
+              'Expenses 1',
+              textAlign: TextAlign.left,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 18.0,
+                // color: Colors.grey[400]
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
 }
