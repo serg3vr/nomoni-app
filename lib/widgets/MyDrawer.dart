@@ -43,15 +43,15 @@ class _MyDrawerState extends State<MyDrawer> {
             _goToHome();
           },
         ),
-        ListTile(
-          enabled: false,
-          leading: Icon(Icons.pages),
-          title: Text('Types'),
-          onTap: () {
-            // Update the state of the app.
-            // ...
-          },
-        ),
+        // ListTile(
+        //   enabled: false,
+        //   leading: Icon(Icons.pages),
+        //   title: Text('Types'),
+        //   onTap: () {
+        //     // Update the state of the app.
+        //     // ...
+        //   },
+        // ),
         ListTile(
           enabled: false,
           leading: Icon(Icons.category),
