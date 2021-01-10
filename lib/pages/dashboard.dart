@@ -23,6 +23,7 @@ class _DashboardState extends State<Dashboard> {
   Future future;
   double dailyAmount = 0;
   double monthlyAmount = 0;
+
   @override
   void initState() {
     super.initState();
@@ -30,56 +31,57 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Future<void> _loadData() async {
-    await api.get('expenses/monthly-amount').then((response) {
-      Map data = jsonDecode(response.body);
-      bool result = data['result'];
-      if (result) {
-        monthlyAmount = double.parse(data['amount']);
-      }
-    });
-    
-    await api.get('expenses/daily-amount').then((response) {
-      Map data = jsonDecode(response.body);
-      bool result = data['result'];
-      if (result) {
-        dailyAmount = double.parse(data['amount']);
-      }
-    });
-
-    // Expenses by categories
-    await api.get('expenses/by-categories').then((response) {
-      Map data = jsonDecode(response.body);
-      bool result = data['result'];
-      if (result) {
-        categoriesList = data['expenses'];
-      }
-    });
-
-    // Expenses by types
-    await api.get('expenses/by-types').then((response) {
-      Map data = jsonDecode(response.body);
-      bool result = data['result'];
-      if (result) {
-        typesList = data['expenses'];
-      }
-    });
-
-    // // Expenses by payment methods
-    await api.get('expenses/by-payment-methods').then((response) {
-      Map data = jsonDecode(response.body);
-      bool result = data['result'];
-      if (result) {
-        paymentMethodsList = data['expenses'];
-      }
-    });
-
-    return api.get('expenses/divided-by-months?pastMonths=5').then((response) {
-      Map data = jsonDecode(response.body);
-      bool result = data['result'];
-      if (result) {
-        expensesList = data['months'];
-      }
-    });
+    try {
+      await api.get('expenses/monthly-amount').then((response) {
+        Map data = jsonDecode(response.body);
+        bool result = data['result'];
+        if (result) {
+          String amount = '${data['amount']}';
+          monthlyAmount = double.parse(amount);
+        }
+      });
+      await api.get('expenses/daily-amount').then((response) {
+        Map data = jsonDecode(response.body);
+        bool result = data['result'];
+        if (result) {
+          String amount = '${data['amount']}';
+          dailyAmount = double.parse(amount);
+        }
+      });
+      // Expenses by categories
+      await api.get('expenses/by-categories').then((response) {
+        Map data = jsonDecode(response.body);
+        bool result = data['result'];
+        if (result) {
+          categoriesList = data['expenses'];
+        }
+      });
+      // Expenses by types
+      await api.get('expenses/by-types').then((response) {
+        Map data = jsonDecode(response.body);
+        bool result = data['result'];
+        if (result) {
+          typesList = data['expenses'];
+        }
+      });
+      // Expenses by payment methods
+      await api.get('expenses/by-payment-methods').then((response) {
+        Map data = jsonDecode(response.body);
+        bool result = data['result'];
+        if (result) {
+          paymentMethodsList = data['expenses'];
+        }
+      });
+      return api.get('expenses/divided-by-months?pastMonths=5').then((response) {
+        Map data = jsonDecode(response.body);
+        bool result = data['result'];
+        if (result) {
+          expensesList = data['months'];
+        }
+      });
+    } on Exception catch (_) {
+      print('never reached');
+    }
   }
 
   @override
@@ -166,6 +168,7 @@ class _DashboardState extends State<Dashboard> {
                 SizedBox(height: 24,),
                 //////////////////////////////////////////////////
                 //////////////////////////////////////////////////
+                
                 lastFiveMonthsWidget(),
                 SizedBox(height: 24,),
                 expensesByCategoriesWidget(),
@@ -174,6 +177,7 @@ class _DashboardState extends State<Dashboard> {
                 SizedBox(height: 24,),
                 expensesByPaymentMethodsWidget(),
                 squareSectionWidget(),
+                
                 //////////////////////////////////////////////////
                 //////////////////////////////////////////////////
               ]

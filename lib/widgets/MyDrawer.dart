@@ -15,8 +15,8 @@ class _MyDrawerState extends State<MyDrawer> {
     Navigator.pushReplacementNamed(context, '/login');
   }
 
-  void _goToHome () async {
-    Navigator.pushReplacementNamed(context, '/expenses');
+  void _goToDashboard () async {
+    Navigator.pushReplacementNamed(context, '/dashboard');
   }
 
   @override
@@ -40,7 +40,7 @@ class _MyDrawerState extends State<MyDrawer> {
           leading: Icon(Icons.home),
           title: Text('Home'),
           onTap: () {
-            _goToHome();
+            _goToDashboard();
           },
         ),
         // ListTile(

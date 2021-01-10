@@ -35,23 +35,23 @@ Future<http.Response> _inspect(Future<http.Response> resp1) async {
 
 
 Future<http.Response> get(String url) {
-  print('______________________________________________________GET: ' + serverURI + url);
+  print('______________________________________________________GET: ' + url);
   return _inspect(http.get(serverURI + url, headers: getHeaders()));
   // return http.get(serverURI + url, headers: getHeaders());
 }
 
 Future<http.Response> post(String url, dynamic body) {
-  print('______________________________________________________POST: ' + serverURI + url);
+  print('______________________________________________________POST: ' + url);
   return http.post(serverURI + url, headers: getHeaders(), body: body);
 }
 
 Future<http.Response> delete(String url) {
-  print('______________________________________________________DEL: ' + serverURI + url);
+  print('______________________________________________________DEL: ' + url);
   return http.delete(serverURI + url, headers: getHeaders());
 }
 
 Future<http.Response> put(String url, dynamic body) async {
-  print('______________________________________________________PUT: ' + serverURI + url);
+  print('______________________________________________________PUT: ' + url);
   http.Response resp = await http.put(serverURI + url, headers: getHeaders(), body: body);
   return resp;
 }
